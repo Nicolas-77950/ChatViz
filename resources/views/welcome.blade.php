@@ -16,23 +16,20 @@
     </head>
     <body class="antialiased bg-slate-950 text-white min-h-screen">
         
-        <!-- Navigation -->
-        <nav x-data="{ mobileMenuOpen: false }" class="fixed top-0 w-full z-50 px-6 py-4 bg-slate-950/50 backdrop-blur-xl border-b border-white/5">
+        <!-- Barre de Navigation Simple -->
+        <nav class="fixed top-0 w-full z-50 px-6 py-4 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
             <div class="max-w-7xl mx-auto flex justify-between items-center">
                 <!-- Logo -->
-                <a href="/" class="z-50">
-                    <x-application-logo class="h-10 w-auto" />
+                <a href="/">
+                    <x-application-logo />
                 </a>
 
-                <!-- Desktop Navigation -->
-                <div class="hidden md:flex items-center gap-8">
+                <!-- Liens de Navigation -->
+                <div class="flex items-center gap-8">
                     <div class="flex gap-6 text-sm font-medium text-slate-400">
                         <a href="{{ route('menu') }}" class="hover:text-white transition">Menu</a>
                         <a href="{{ route('about') }}" class="hover:text-white transition">À propos</a>
-                        <a href="{{ route('contact') }}" class="hover:text-white transition flex items-center gap-2">
-                            Contact
-                            <span class="text-[10px] bg-red-500/10 text-red-500 px-2 py-0.5 rounded-full border border-red-500/20">Anti-Cyberharcèlement</span>
-                        </a>
+                        <a href="{{ route('contact') }}" class="hover:text-white transition">Contact</a>
                     </div>
 
                     <div class="h-4 w-px bg-white/10 mx-2"></div>
@@ -40,7 +37,7 @@
                     <div class="flex gap-4">
                         @if (Route::has('login'))
                             @auth
-                                <a href="{{ url('/dashboard') }}" class="text-sm font-medium hover:text-indigo-400 transition">Mon Tableau de bord</a>
+                                <a href="{{ url('/dashboard') }}" class="text-sm font-medium hover:text-indigo-400 transition">Tableau de bord</a>
                             @else
                                 <a href="{{ route('login') }}" class="text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 transition">Connexion</a>
                                 @if (Route::has('register'))
@@ -49,40 +46,6 @@
                             @endauth
                         @endif
                     </div>
-                </div>
-
-                <!-- Mobile Menu Button -->
-                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden z-50 text-slate-400 hover:text-white transition">
-                    <svg x-show="!mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                    </svg>
-                    <svg x-show="mobileMenuOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-
-                <!-- Mobile Menu Overlay -->
-                <div x-show="mobileMenuOpen" 
-                     x-transition:enter="transition ease-out duration-300"
-                     x-transition:enter-start="opacity-0 translate-x-full"
-                     x-transition:enter-end="opacity-100 translate-x-0"
-                     x-transition:leave="transition ease-in duration-200"
-                     x-transition:leave-start="opacity-100 translate-x-0"
-                     x-transition:leave-end="opacity-0 translate-x-full"
-                     class="fixed inset-0 bg-slate-950 flex flex-col justify-center items-center gap-8 z-40 md:hidden">
-                    <a @click="mobileMenuOpen = false" href="{{ route('menu') }}" class="text-2xl font-bold hover:text-indigo-400">Menu</a>
-                    <a @click="mobileMenuOpen = false" href="{{ route('about') }}" class="text-2xl font-bold hover:text-indigo-400">À propos</a>
-                    <a @click="mobileMenuOpen = false" href="{{ route('contact') }}" class="text-2xl font-bold hover:text-indigo-400 text-center">
-                        Contact<br>
-                        <span class="text-xs text-red-500 uppercase tracking-widest">Anti-Cyberharcèlement</span>
-                    </a>
-                    <div class="h-px w-24 bg-white/10"></div>
-                    @auth
-                        <a @click="mobileMenuOpen = false" href="{{ url('/dashboard') }}" class="text-xl font-bold text-indigo-400">Tableau de bord</a>
-                    @else
-                        <a @click="mobileMenuOpen = false" href="{{ route('login') }}" class="text-xl font-bold">Connexion</a>
-                        <a @click="mobileMenuOpen = false" href="{{ route('register') }}" class="btn-primary px-8 py-3 rounded-full text-xl font-bold">S'inscrire</a>
-                    @endauth
                 </div>
             </div>
         </nav>
