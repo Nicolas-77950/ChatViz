@@ -54,7 +54,8 @@ La sécurité est au cœur de ChatViz. Le fichier `_chat.txt` **ne quitte jamais
    ./vendor/bin/sail artisan migrate
    ```
 
-L'application est maintenant disponible sur [http://localhost](http://localhost).
+Application : [http://localhost]
+Base de données : [http://localhost:8080]
 
 ## 🛠️ Commandes utiles
 
