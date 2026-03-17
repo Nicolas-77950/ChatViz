@@ -7,7 +7,7 @@
 
         <title>{{ config('app.name', 'ChatViz') }}</title>
 
-        <!-- Fonts -->
+        <!-- Polices -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -18,7 +18,7 @@
     <body class="font-sans antialiased bg-slate-950 text-white overflow-hidden">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative">
             
-            <!-- Background Decorative Elements -->
+            <!-- Éléments décoratifs en arrière-plan -->
             <div class="absolute -top-24 -left-24 size-96 bg-indigo-600/20 blur-[120px] rounded-full pointer-events-none"></div>
             <div class="absolute -bottom-24 -right-24 size-96 bg-pink-600/20 blur-[120px] rounded-full pointer-events-none"></div>
 

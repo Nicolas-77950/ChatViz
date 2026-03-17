@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Exécute les migrations.
      */
     public function up(): void
     {
@@ -16,13 +16,13 @@ return new class extends Migration
             $table->string('name');
             $table->string('email');
             $table->text('message');
-            $table->string('status')->default('unread'); // unread, read, processed
+            $table->string('status')->default('unread'); // non lu, lu, traité
             $table->timestamps();
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Annule les migrations.
      */
     public function down(): void
     {

@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>ChatViz - Analysez vos conversations WhatsApp</title>
 
-        <!-- Fonts -->
+        <!-- Polices -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
             <div class="flex gap-4">
                 @if (Route::has('login'))
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="text-sm font-medium hover:text-indigo-400 transition">Mon Dashboard</a>
+                        <a href="{{ url('/dashboard') }}" class="text-sm font-medium hover:text-indigo-400 transition">Mon Tableau de bord</a>
                     @else
                         <a href="{{ route('login') }}" class="text-sm font-medium border border-indigo-500/50 px-4 py-2 rounded-full hover:bg-indigo-500/10 transition">Connexion</a>
                         @if (Route::has('register'))
@@ -35,9 +35,9 @@
             </div>
         </nav>
 
-        <!-- Background Dashboard Preview (Blurred) -->
+        <!-- Aperçu du Dashboard en arrière-plan (Flouté) -->
         <div class="dashboard-preview absolute inset-0 grid grid-cols-1 md:grid-cols-3 gap-6 p-12 opacity-40">
-            <!-- Mock Cards -->
+            <!-- Fausses cartes -->
             <div class="h-64 glass rounded-3xl p-6 flex flex-col justify-between">
                 <div class="h-4 w-24 bg-indigo-500/30 rounded-full"></div>
                 <div class="space-y-3">
@@ -78,7 +78,7 @@
             </div>
         </div>
 
-        <!-- Hero Content (Centered & Clear) -->
+        <!-- Contenu Principal (Centré & Net) -->
         <div class="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 text-center">
             <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.1]">
                 Le verdict de votre <br>
@@ -107,7 +107,7 @@
             </div>
         </div>
 
-        <!-- Floating Decorative Elements -->
+        <!-- Éléments décoratifs flottants -->
         <div class="absolute -top-24 -left-24 size-96 bg-indigo-600/20 blur-[120px] rounded-full pointer-events-none"></div>
         <div class="absolute -bottom-24 -right-24 size-96 bg-pink-600/20 blur-[120px] rounded-full pointer-events-none"></div>
 

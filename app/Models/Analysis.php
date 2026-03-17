@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Modèle représentant une analyse de conversation WhatsApp.
+ */
 class Analysis extends Model
 {
     protected $fillable = [
