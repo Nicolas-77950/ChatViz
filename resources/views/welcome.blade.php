@@ -16,37 +16,46 @@
     </head>
     <body class="antialiased bg-slate-950 text-white min-h-screen">
         
-        <!-- Barre de Navigation Simple -->
-        <nav class="fixed top-0 w-full z-50 px-6 py-4 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
-            <div class="max-w-7xl mx-auto flex justify-between items-center">
-                <!-- Logo -->
-                <a href="/">
-                    <x-application-logo />
-                </a>
+        <!-- Header Premium -->
+        <nav class="fixed top-0 w-full z-50 px-8 py-6 bg-slate-950/80 backdrop-blur-2xl border-b border-white/5">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                
+                <!-- Bloc Gauche : Identité & Navigation -->
+                <div class="flex items-center gap-16">
+                    <!-- Logo & Nom -->
+                    <a href="/" class="flex-shrink-0 group">
+                        <div class="flex items-center gap-4 transition-all duration-300 mr-8">
+                            <img src="{{ asset('assets/images/logo.png') }}" alt="ChatViz" class="h-10 w-auto group-hover:rotate-12 transition-transform duration-500">
+                            <span class="gradient-text font-bold text-3xl tracking-tighter">ChatViz</span>
+                        </div>
+                    </a>
 
-                <!-- Liens de Navigation -->
-                <div class="flex items-center gap-8">
-                    <div class="flex gap-6 text-sm font-medium text-slate-400">
-                        <a href="{{ route('menu') }}" class="hover:text-white transition">Menu</a>
-                        <a href="{{ route('about') }}" class="hover:text-white transition">À propos</a>
-                        <a href="{{ route('contact') }}" class="hover:text-white transition">Contact</a>
-                    </div>
-
-                    <div class="h-4 w-px bg-white/10 mx-2"></div>
-
-                    <div class="flex gap-4">
-                        @if (Route::has('login'))
-                            @auth
-                                <a href="{{ url('/dashboard') }}" class="text-sm font-medium hover:text-indigo-400 transition">Tableau de bord</a>
-                            @else
-                                <a href="{{ route('login') }}" class="text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 transition">Connexion</a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="btn-primary text-sm font-bold px-6 py-2 rounded-full shadow-lg">S'inscrire</a>
-                                @endif
-                            @endauth
-                        @endif
+                    <!-- Navigation (Espacée à la main pour être sûr) -->
+                    <div class="hidden lg:flex items-center">
+                        <div class="flex items-center gap-12 text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+                            <a href="{{ route('menu') }}" class="hover:text-indigo-400 transition-all hover:scale-110">Menu</a>
+                            <a href="{{ route('about') }}" class="hover:text-indigo-400 transition-all hover:scale-110">À propos</a>
+                            <a href="{{ route('contact') }}" class="hover:text-indigo-400 transition-all hover:scale-110">Contact</a>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Bloc Droite : Authentification -->
+                <div class="flex items-center gap-6">
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="text-sm font-bold uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition">Tableau de bord</a>
+                        @else
+                            <a href="{{ route('login') }}" class="text-sm font-bold uppercase tracking-widest text-slate-400 hover:text-white transition">Connexion</a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="btn-primary text-sm font-bold uppercase tracking-widest px-8 py-3 rounded-full shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] transition-all hover:-translate-y-0.5 active:translate-y-0">
+                                    S'inscrire
+                                </a>
+                            @endif
+                        @endauth
+                    @endif
+                </div>
+
             </div>
         </nav>
 
