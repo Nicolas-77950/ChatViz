@@ -12,11 +12,23 @@
 
         <!-- Styles / Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-
     </head>
-    <body class="antialiased bg-slate-950 text-white min-h-screen">
+    <body class="antialiased bg-slate-950 text-white min-h-screen overflow-x-hidden">
         
-        <!-- Header Premium -->
+        <!-- Overlay de Drag & Drop (Nouveau : Gardé du merge) -->
+        <div id="drop-overlay" class="fixed inset-0 z-[100] flex items-center justify-center bg-indigo-600/20 backdrop-blur-md border-4 border-dashed border-indigo-500 m-6 rounded-3xl pointer-events-none opacity-0 transition-opacity duration-300">
+            <div class="text-center">
+                <div class="bg-indigo-500 text-white p-6 rounded-full shadow-2xl mb-4 inline-block animate-bounce">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-12 h-12">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 7.5 7.5M12 3v13.5" />
+                    </svg>
+                </div>
+                <h2 class="text-4xl font-bold text-white text-shadow-lg">Lâchez votre fichier ici</h2>
+                <p class="text-indigo-200 mt-2 text-lg">Analyse immédiate de votre conversation WhatsApp</p>
+            </div>
+        </div>
+
+        <!-- Header Premium (Ma version simplifiée et espacée) -->
         <nav class="fixed top-0 w-full z-50 px-8 py-6 bg-slate-950/80 backdrop-blur-2xl border-b border-white/5">
             <div class="max-w-7xl mx-auto flex items-center justify-between">
                 
@@ -30,7 +42,7 @@
                         </div>
                     </a>
 
-                    <!-- Navigation (Espacée à la main pour être sûr) -->
+                    <!-- Navigation -->
                     <div class="hidden lg:flex items-center">
                         <div class="flex items-center gap-12 text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
                             <a href="{{ route('menu') }}" class="hover:text-indigo-400 transition-all hover:scale-110">Menu</a>
@@ -55,15 +67,13 @@
                         @endauth
                     @endif
                 </div>
-
             </div>
         </nav>
 
         <!-- Contenu Hero -->
         <section class="relative min-h-screen flex flex-col items-center justify-center pt-20">
             <!-- Aperçu du Dashboard en arrière-plan (Flouté) -->
-            <div class="dashboard-preview absolute inset-0 grid grid-cols-1 md:grid-cols-3 gap-6 p-12 opacity-30 pt-32">
-                <!-- Fausses cartes -->
+            <div class="dashboard-preview absolute inset-0 grid grid-cols-1 md:grid-cols-3 gap-6 p-12 opacity-30 pt-32 pointer-events-none">
                 <div class="h-64 glass rounded-3xl p-6 flex flex-col justify-between">
                     <div class="h-4 w-24 bg-indigo-500/30 rounded-full"></div>
                     <div class="space-y-3">
@@ -84,16 +94,6 @@
                         <div class="h-8 w-2/3 bg-slate-800 rounded-lg"></div>
                     </div>
                 </div>
-                <div class="md:col-span-2 h-80 glass rounded-3xl p-6 relative overflow-hidden">
-                    <div class="absolute inset-0 flex items-end p-6 gap-2">
-                        <div class="h-1/2 w-8 bg-indigo-500/50 rounded-t"></div>
-                        <div class="h-2/3 w-8 bg-purple-500/50 rounded-t"></div>
-                        <div class="h-1/3 w-8 bg-indigo-500/50 rounded-t"></div>
-                        <div class="h-3/4 w-8 bg-purple-500/50 rounded-t"></div>
-                        <div class="h-1/2 w-8 bg-indigo-500/50 rounded-t"></div>
-                        <div class="h-full w-8 bg-pink-500/50 rounded-t"></div>
-                    </div>
-                </div>
             </div>
 
             <!-- Contenu Principal (Centré & Net) -->
@@ -108,14 +108,18 @@
                     <span class="text-indigo-400 font-semibold bg-indigo-400/10 px-4 py-1 rounded-full border border-indigo-400/20">100% sécurisé : vos données ne quittent jamais votre navigateur.</span>
                 </p>
 
-                <div class="flex flex-col sm:flex-row gap-6">
-                    <a href="{{ route('register') }}" class="btn-primary px-10 py-5 rounded-full text-xl font-bold shadow-2xl flex items-center justify-center gap-3 hover:scale-105 transition transform">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+                <!-- Formulaire d'import (Version du merge - fonctionnel) -->
+                <form action="/analyze" method="POST" enctype="multipart/form-data" id="uploadForm">
+                    @csrf
+                    <input type="file" name="chat_file" id="chat_file" class="hidden" accept=".txt">
+                    
+                    <label for="chat_file" class="btn-primary px-10 py-5 rounded-full text-xl font-bold shadow-2xl flex items-center justify-center gap-3 hover:scale-105 transition transform cursor-pointer group">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6 group-hover:-translate-y-1 transition-transform">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 7.5 7.5M12 3v13.5" />
                         </svg>
                         Importer ma conversation
-                    </a>
-                </div>
+                    </label>
+                </form>
 
                 <div class="mt-12 flex items-center gap-4 text-sm text-slate-500">
                     <div class="flex -space-x-3">
@@ -128,12 +132,15 @@
             </div>
         </section>
 
-        <!-- Pied de page (Footer) -->
+        <!-- Pied de page (Premium) -->
         <footer class="relative z-10 bg-slate-950 border-t border-white/5 pt-20 pb-10 px-6">
             <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
                 <!-- Logo & Description -->
                 <div class="md:col-span-2">
-                    <x-application-logo class="h-10 w-auto mb-6" />
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="ChatViz" class="h-8 w-auto">
+                        <span class="gradient-text font-bold text-2xl tracking-tighter">ChatViz</span>
+                    </div>
                     <p class="text-slate-400 max-w-sm leading-relaxed">
                         L'outil ultime pour comprendre vos dynamiques de chat. Analysez, visualisez et protégez vos interactions sociales en un clic.
                     </p>
@@ -166,7 +173,7 @@
             </div>
 
             <!-- Bas de page -->
-            <div class="max-w-7xl mx-auto pt-10 border-t border-white/5 flex flex-col md:row items-center justify-between gap-6 text-slate-500 text-xs">
+            <div class="max-w-7xl mx-auto pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 text-slate-500 text-xs">
                 <div class="flex items-center gap-2">
                     <span>&copy; {{ date('Y') }} ChatViz Team.</span>
                     <span class="h-3 w-px bg-white/10"></span>
