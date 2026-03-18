@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr" class="h-full bg-black">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +8,7 @@
 </head>
 <body class="h-full text-white antialiased flex items-center justify-center py-12 px-4 bg-black">
 
-    {{--formulaire--}}
+    {{-- Carte de formulaire --}}
     <div class="max-w-md w-full bg-gray-900 p-8 rounded-2xl shadow-2xl border border-gray-800">
         
         <header class="text-center mb-8">
@@ -18,7 +18,7 @@
             <p class="mt-2 text-sm text-gray-400">Fond noir, style épuré.</p>
         </header>
 
-        {{-- Alerte de succès--}}
+        {{-- alerte de succès qui s'affiche après l'envoi --}}
         @if(session('success'))
             <div class="mb-6 p-4 bg-indigo-900/30 border border-indigo-500 text-white text-sm rounded-lg">
                 {{ session('success') }}
@@ -28,7 +28,7 @@
         <form method="POST" action="{{ route('contact.store') }}" class="space-y-6">
             @csrf 
 
-            {{-- Nom --}}
+            {{-- Champ Nom --}}
             <div>
                 <label for="name" class="block text-sm font-semibold text-white mb-2">Nom</label>
                 <input type="text" id="name" name="name" required value="{{ old('name') }}"
@@ -37,7 +37,7 @@
                 @error('name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
             </div>
 
-            {{-- Email --}}
+            {{-- Champ Email --}}
             <div>
                 <label for="email" class="block text-sm font-semibold text-white mb-2">Email</label>
                 <input type="email" id="email" name="email" required value="{{ old('email') }}"
@@ -45,7 +45,7 @@
                     placeholder="nom@exemple.com">
             </div>
 
-            {{-- Message --}}
+            {{-- Champ Message --}}
             <div>
                 <label for="message" class="block text-sm font-semibold text-white mb-2">Message</label>
                 <textarea id="message" name="message" rows="4" required
@@ -53,9 +53,10 @@
                     placeholder="Comment pouvons-nous vous aider ?">{{ old('message') }}</textarea>
             </div>
 
-            {{-- Le bouton--}}
+            {{-- Le bouton d'envoi--}}
             <button type="submit" 
                 class="w-full bg-indigo-500 hover:bg-fuchsia-500 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 shadow-lg shadow-indigo-500/20 uppercase tracking-widest text-sm">
+                Envoyer le message
             </button>
         </form>
     </div>
