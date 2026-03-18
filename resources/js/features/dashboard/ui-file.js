@@ -1,11 +1,11 @@
 /**
- * ui.js
+ * ui-file.js
  * Ce fichier gère l'affichage à l'écran UNE FOIS que le fichier txt est importé.
  * Au lieu de voir l'historique, on va voir le fichier chargé et choisir notre analyse !
  */
 
-import { calculateResponseTime } from './stats/responseTime.js';
-import { renderResponseTime } from './stats/renderResponseTime.js';
+import { calculateResponseTime } from './responseTime/responseTime.js';
+import { renderResponseTime } from './responseTime/renderResponseTime.js';
 
 export function showFileCard(filename, messages) {
     // On cherche la grande div vide qu'on a créée dans dashboard.blade.php
@@ -78,14 +78,14 @@ export function showFileCard(filename, messages) {
     document.getElementById('btn-fermer-analyse').addEventListener('click', () => {
         container.innerHTML = ''; // on vide le HTML
         container.classList.add('hidden'); // on recache notre zone
-        
+
         // On réaffiche la grande case d'historique (les "importations récentes")
         if (historyContainer) historyContainer.classList.remove('hidden');
     });
 
-    // Si on clique sur la carte "Temps de réponse" -> on lance notre algo !
+    // Si on clique sur la carte "Temps de réponse" -> on lance notre algo 
     document.getElementById('btn-temps-reponse').addEventListener('click', () => {
-        // A. On lance notre algorithme mathématique fraîchement codé !
+        // A. On lance notre algorithme mathématique fraîchement codé 
         const resultats = calculateResponseTime(messages);
 
         // B. On le dessine à l'écran dans le "conteneur-resultat-specifique"

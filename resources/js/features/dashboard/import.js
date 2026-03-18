@@ -5,7 +5,7 @@
  */
 
 import { parseChat } from './parser.js';
-import { showFileCard } from './ui.js';
+import { showFileCard } from './ui-file.js';
 
 
 /**

@@ -1,6 +1,6 @@
 /**
  * renderResponseTime.js
- * Ce code est appelé par "ui.js" juste après le clic.
+ * Ce code est appelé par "ui-file.js" juste après le clic.
  * Il récupère les résultats de l'algorithme "responseTime.js" et va dessiner le HTML Final.
  */
 
