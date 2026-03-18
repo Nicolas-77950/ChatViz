@@ -42,7 +42,9 @@
                 
                 <!-- Colonne Principale : Historique / Analyses -->
                 <div class="lg:col-span-2 space-y-8">
-                    <div class="glass p-8 rounded-[2.5rem] border border-white/5 shadow-2xl">
+                    
+                    <!-- ====== BLOC HISTORIQUE ====== -->
+                    <div id="history-container" class="glass p-8 rounded-[2.5rem] border border-white/5 shadow-2xl transition-all">
                         <h3 class="text-xl font-bold mb-8 flex items-center gap-3">
                             <span class="size-2 bg-indigo-500 rounded-full animate-pulse"></span>
                             Mes Importations Récentes
@@ -97,6 +99,11 @@
                             </div>
                         @endif
                     </div>
+
+                    <!-- ======= LA DIV POUR AFFICHER LES ANALYSES ======= -->
+                    <!-- Cachée par défaut, JS la rendra visible avec "removeClass('hidden')" -->
+                    <div id="results-container" class="hidden"></div>
+
                 </div>
 
                 <!-- Colonne Latérale : Statistiques Rapides -->

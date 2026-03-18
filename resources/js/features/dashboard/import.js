@@ -5,6 +5,8 @@
  */
 
 import { parseChat } from './parser.js';
+import { showFileCard } from './ui.js';
+
 
 /**
  * Fonction utilitaire : affiche ou cache l'overlay de drop.
@@ -29,10 +31,9 @@ async function handleFile(file) {
     }
 
     const messages = await parseChat(file);
-
-    // Pour l'instant on affiche dans la console.
-    // Prochaine étape : on passera les données aux fonctions de stats et de rendu.
-    console.log('[ChatViz] Données prêtes :', messages);
+    
+    // Et bam ! On dessine la carte du fichier avec les choix possibles ! 🎉
+    showFileCard(file.name, messages);
 }
 
 /**
@@ -40,7 +41,7 @@ async function handleFile(file) {
  */
 export function initImport() {
     const dropOverlay = document.getElementById('drop-overlay');
-    const fileInput   = document.getElementById('chat_file');
+    const fileInput = document.getElementById('chat_file');
 
     if (!dropOverlay || !fileInput) return;
 
