@@ -18,10 +18,10 @@ export function renderResponseTime(resultats, cibleDaffichage) {
 
     // 3. On génère le HTML des "Cartes" pour chaque personne
     let cartesHTML = '';
-    
+
     nomsDesAuteurs.forEach((auteur) => {
         const statsDeCettePersonne = statsParAuteur[auteur];
-        
+
         // On concatène (+=) le HTML une nouvelle carte pour chaque nom
         cartesHTML += `
             <div class="bg-black/20 rounded-xl p-5 border border-white/5 flex-1 relative overflow-hidden group">
@@ -59,9 +59,9 @@ export function renderResponseTime(resultats, cibleDaffichage) {
         `;
     });
 
-    // 4. On génère le petit TOP 5 🏆 en bas
+    // 4. On génère le petit TOP 5 en bas
     let top5HTML = '';
-    
+
     if (top5LongsTemps.length > 0) {
         // On boucle sur nos objets `item` provenant de la partie algorithme `top5`
         top5LongsTemps.forEach((item, index) => {
@@ -111,7 +111,7 @@ export function renderResponseTime(resultats, cibleDaffichage) {
             
         </div>
     `;
-    
+
     // Ajoute une animation douce en scrollant vers les résultats une fois rendus !
     conteneur.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
