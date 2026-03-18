@@ -5,14 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>ChatViz - Analysez vos conversations WhatsApp</title>
 
+        <!-- Polices -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 
+        <!-- Styles / Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="antialiased bg-slate-950 text-white min-h-screen overflow-x-hidden">
         
+        <!-- Overlay de Drag & Drop (Nouveau : Gardé du merge) -->
         <div id="drop-overlay" class="fixed inset-0 z-[100] flex items-center justify-center bg-indigo-600/20 backdrop-blur-md border-4 border-dashed border-indigo-500 m-6 rounded-3xl pointer-events-none opacity-0 transition-opacity duration-300">
             <div class="text-center">
                 <div class="bg-indigo-500 text-white p-6 rounded-full shadow-2xl mb-4 inline-block animate-bounce">
@@ -25,36 +28,48 @@
             </div>
         </div>
 
-        <nav class="fixed top-0 w-full z-50 px-6 py-4 bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
-            <div class="max-w-7xl mx-auto flex justify-between items-center">
-                <div class="text-2xl font-bold tracking-tight">
-                    <span class="gradient-text">ChatViz</span>
+        <!-- Header Premium (Ma version simplifiée et espacée) -->
+        <nav class="fixed top-0 w-full z-50 px-8 py-6 bg-slate-950/80 backdrop-blur-2xl border-b border-white/5">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                
+                <!-- Bloc Gauche : Identité & Navigation -->
+                <div class="flex items-center gap-16">
+                    <!-- Logo & Nom -->
+                    <a href="/" class="flex-shrink-0 group">
+                        <div class="flex items-center gap-4 transition-all duration-300 mr-8">
+                            <img src="{{ asset('assets/images/logo.png') }}" alt="ChatViz" class="h-10 w-auto group-hover:rotate-12 transition-transform duration-500">
+                            <span class="gradient-text font-bold text-3xl tracking-tighter">ChatViz</span>
+                        </div>
+                    </a>
+
+                    <!-- Navigation -->
+                    <div class="hidden lg:flex items-center">
+                        <div class="flex items-center gap-12 text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+                            <a href="{{ route('menu') }}" class="hover:text-indigo-400 transition-all hover:scale-110">Menu</a>
+                            <a href="{{ route('about') }}" class="hover:text-indigo-400 transition-all hover:scale-110">À propos</a>
+                            <a href="{{ route('contact') }}" class="hover:text-indigo-400 transition-all hover:scale-110">Contact</a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-8">
-                    <div class="hidden md:flex gap-6 text-sm font-medium text-slate-400">
-                        <a href="{{ route('menu') }}" class="hover:text-white transition">Menu</a>
-                        <a href="{{ route('about') }}" class="hover:text-white transition">À propos</a>
-                        <a href="{{ route('contact') }}" class="hover:text-white transition">Contact</a>
-                    </div>
-
-                    <div class="hidden md:block h-4 w-px bg-white/10 mx-2"></div>
-
-                    <div class="flex gap-4">
-                        @if (Route::has('login'))
-                            @auth
-                                <a href="{{ url('/dashboard') }}" class="text-sm font-medium hover:text-indigo-400 transition">Tableau de bord</a>
-                            @else
-                                <a href="{{ route('login') }}" class="text-sm font-medium px-4 py-2 rounded-full hover:bg-white/5 transition">Connexion</a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="btn-primary text-sm font-bold px-6 py-2 rounded-full shadow-lg">S'inscrire</a>
-                                @endif
-                            @endauth
-                        @endif
-                    </div>
+                <!-- Bloc Droite : Authentification -->
+                <div class="flex items-center gap-6">
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="text-sm font-bold uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition">Tableau de bord</a>
+                        @else
+                            <a href="{{ route('login') }}" class="text-sm font-bold uppercase tracking-widest text-slate-400 hover:text-white transition">Connexion</a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="btn-primary text-sm font-bold uppercase tracking-widest px-8 py-3 rounded-full shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] transition-all hover:-translate-y-0.5 active:translate-y-0">
+                                    S'inscrire
+                                </a>
+                            @endif
+                        @endauth
+                    @endif
                 </div>
             </div>
         </nav>
+
 
         <section class="relative min-h-screen flex items-center justify-center py-20 overflow-hidden">
     
@@ -128,17 +143,21 @@
         <div class="fixed bottom-0 right-0 translate-x-1/2 translate-y-1/2 size-[500px] bg-purple-600/10 blur-[120px] rounded-full pointer-events-none z-[-1]"></div>
     </section>
 
+        <!-- Pied de page (Premium) -->
         <footer class="relative z-10 bg-slate-950 border-t border-white/5 pt-20 pb-10 px-6">
             <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+                <!-- Logo & Description -->
                 <div class="md:col-span-2">
-                    <div class="text-2xl font-bold tracking-tight mb-6">
-                        <span class="gradient-text">ChatViz</span>
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="ChatViz" class="h-8 w-auto">
+                        <span class="gradient-text font-bold text-2xl tracking-tighter">ChatViz</span>
                     </div>
                     <p class="text-slate-400 max-w-sm leading-relaxed">
                         L'outil ultime pour comprendre vos dynamiques de chat. Analysez, visualisez et protégez vos interactions sociales en un clic.
                     </p>
                 </div>
 
+                <!-- Navigation -->
                 <div>
                     <h4 class="text-white font-bold mb-6">Navigation</h4>
                     <ul class="flex flex-col gap-4 text-slate-400 text-sm">
@@ -148,6 +167,7 @@
                     </ul>
                 </div>
 
+                <!-- Légal & Sécurité -->
                 <div>
                     <h4 class="text-white font-bold mb-6">Sécurité</h4>
                     <ul class="flex flex-col gap-4 text-slate-400 text-sm">
@@ -163,6 +183,7 @@
                 </div>
             </div>
 
+            <!-- Bas de page -->
             <div class="max-w-7xl mx-auto pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 text-slate-500 text-xs">
                 <div class="flex items-center gap-2">
                     <span>&copy; {{ date('Y') }} ChatViz Team.</span>
@@ -175,6 +196,7 @@
             </div>
         </footer>
 
+        <!-- Éléments décoratifs flottants -->
         <div class="fixed top-0 left-0 -translate-x-1/2 -translate-y-1/2 size-[600px] bg-indigo-600/10 blur-[150px] rounded-full pointer-events-none"></div>
         <div class="fixed bottom-0 right-0 translate-x-1/2 translate-y-1/2 size-[600px] bg-pink-600/10 blur-[150px] rounded-full pointer-events-none"></div>
 
