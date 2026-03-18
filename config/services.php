@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'openai' => [
+        'api_key' => env('MISTRAL_API_KEY'),
+    ],
+
 ];
