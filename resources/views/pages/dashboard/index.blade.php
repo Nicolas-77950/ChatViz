@@ -149,4 +149,5 @@
             </div>
         </div>
     </div>
+    @include('pages.dashboard.partials.templates')
 </x-app-layout>

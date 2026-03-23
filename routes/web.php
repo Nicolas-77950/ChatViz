@@ -2,33 +2,13 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    $files = [];
-    if (Storage::exists('chats')) {
-        $allFiles = Storage::files('chats');
-        // On filtre pour n'avoir que les fichiers de l'utilisateur (chat_ID_...)
-        $userPrefix = 'chats/chat_' . auth()->id() . '_';
-        foreach ($allFiles as $file) {
-            if (str_starts_with($file, $userPrefix)) {
-                $files[] = [
-                    'name' => basename($file),
-                    'path' => $file,
-                    'date' => date('d/m/Y H:i', Storage::lastModified($file)),
-                    'size' => round(Storage::size($file) / 1024, 2) . ' KB'
-                ];
-            }
-        }
-    }
-
-    return view('dashboard', ['files' => $files]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Inclusion des routes organisées par fonctionnalités
+require __DIR__ . '/web/dashboard.php';
 
 // Routes publiques
 Route::get('/menu', function () { return view('welcome'); })->name('menu');
@@ -43,28 +23,3 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
-
-Route::post('/analyze', function (Request $request) {
-    if ($request->hasFile('chat_file')) {
-        $file = $request->file('chat_file');
-
-        $fileName = 'chat_' . auth()->id() . '_' . time() . '.txt';
-        $file->storeAs('chats', $fileName);
-
-        return redirect()->route('dashboard');
-    }
-
-    return back();
-})->middleware(['auth'])->name('analyze');
-
-Route::post('/delete-chat', function (Request $request) {
-    $path = $request->input('path');
-    // Sécurité : on vérifie que le fichier appartient bien à l'utilisateur
-    $userPrefix = 'chats/chat_' . auth()->id() . '_';
-    if (str_starts_with($path, $userPrefix) && Storage::exists($path)) {
-        Storage::delete($path);
-        return back()->with('success', 'Analyse supprimée.');
-    }
-    return back()->with('error', 'Action non autorisée.');
-})->middleware(['auth'])->name('delete-chat');

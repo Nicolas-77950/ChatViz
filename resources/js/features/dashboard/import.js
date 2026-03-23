@@ -1,94 +1,95 @@
 /**
  * import.js
  * Responsabilité : Gérer uniquement l'interface utilisateur du Drag & Drop
- * et du bouton d'importation. Délègue le parsing à parser.js.
+ * et du bouton d'importation. Délègue l'analyse à parser.js.
  */
 
-import { parseChat } from './parser.js';
-import { showFileCard } from './ui-file.js';
-
+import { analyserFichier } from './parser.js';
+import { afficherCarteFichier } from './ui-file.js';
 
 /**
- * Fonction utilitaire : affiche ou cache l'overlay de drop.
+ * Affiche ou cache l'overlay bleu lors du survol d'un fichier.
  */
-function setOverlayVisible(overlay, visible) {
-    if (visible) {
-        overlay.classList.remove('opacity-0', 'pointer-events-none');
-        overlay.classList.add('opacity-100');
+function reglerAffichageOverlay(element, estVisible) {
+    if (estVisible) {
+        element.classList.remove('opacity-0', 'pointer-events-none');
+        element.classList.add('opacity-100');
     } else {
-        overlay.classList.remove('opacity-100');
-        overlay.classList.add('opacity-0', 'pointer-events-none');
+        element.classList.remove('opacity-100');
+        element.classList.add('opacity-0', 'pointer-events-none');
     }
 }
 
 /**
- * Traite un fichier File : vérifie l'extension, lance le parsing.
+ * @function gererFichier
+ * Lit le fichier, l'analyse et lance l'affichage de l'interface d'analyse.
  */
-async function handleFile(file) {
-    if (!file.name.toLowerCase().endsWith('.txt')) {
-        alert('Format invalide : seul les fichiers .txt sont acceptés.');
+async function gererFichier(fichier) {
+    if (!fichier.name.endsWith('.txt')) {
+        alert("Oups ! Seuls les fichiers .txt (export WhatsApp) sont acceptés.");
         return;
     }
 
-    const messages = await parseChat(file);
+    const messages = await analyserFichier(fichier);
     
-    // Et bam ! On dessine la carte du fichier avec les choix possibles ! 🎉
-    showFileCard(file.name, messages);
+    // Affichage de l'interface de choix d'analyse
+    afficherCarteFichier(fichier.name, messages);
 }
 
 /**
- * Initialise tous les événements Drag & Drop et le bouton d'import.
+ * @function initImport
+ * Point d'entrée pour activer l'importation (Drag&Drop + Clic).
  */
 export function initImport() {
-    const dropOverlay = document.getElementById('drop-overlay');
-    const fileInput = document.getElementById('chat_file');
+    const overlayDeDepot = document.getElementById('drop-overlay');
+    const champFichier = document.getElementById('chat_file');
 
-    if (!dropOverlay || !fileInput) return;
+    if (!overlayDeDepot || !champFichier) return;
 
-    let dragCounter = 0;
+    let compteurDrag = 0;
 
-    // --- Blocage des comportements par défaut du navigateur ---
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        window.addEventListener(eventName, (e) => {
+    // Blocage des comportements par défaut du navigateur
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(nomEvenement => {
+        window.addEventListener(nomEvenement, (e) => {
             e.preventDefault();
             e.stopPropagation();
         }, false);
     });
 
-    // --- Apparition de l'overlay ---
+    // Apparition de l'overlay au survol
     window.addEventListener('dragenter', () => {
-        dragCounter++;
-        if (dragCounter === 1) setOverlayVisible(dropOverlay, true);
+        compteurDrag++;
+        if (compteurDrag === 1) reglerAffichageOverlay(overlayDeDepot, true);
     });
 
     window.addEventListener('dragleave', () => {
-        dragCounter--;
-        if (dragCounter <= 0) {
-            dragCounter = 0;
-            setOverlayVisible(dropOverlay, false);
+        compteurDrag--;
+        if (compteurDrag <= 0) {
+            compteurDrag = 0;
+            reglerAffichageOverlay(overlayDeDepot, false);
         }
     });
 
-    // Nécessaire pour autoriser le "drop"
+    // Indique que le fichier peut être copié
     window.addEventListener('dragover', (e) => {
         e.dataTransfer.dropEffect = 'copy';
     });
 
-    // --- Réception du fichier par glisser-déposer ---
+    // Réception du fichier par glisser-déposer
     window.addEventListener('drop', (e) => {
-        dragCounter = 0;
-        setOverlayVisible(dropOverlay, false);
+        compteurDrag = 0;
+        reglerAffichageOverlay(overlayDeDepot, false);
 
-        const files = e.dataTransfer.files;
-        if (files && files.length > 0) {
-            handleFile(files[0]);
+        const fichiers = e.dataTransfer.files;
+        if (fichiers && fichiers.length > 0) {
+            gererFichier(fichiers[0]);
         }
     });
 
-    // --- Réception du fichier via le bouton d'importation ---
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files.length > 0) {
-            handleFile(fileInput.files[0]);
+    // Réception du fichier via le bouton classique
+    champFichier.addEventListener('change', () => {
+        if (champFichier.files.length > 0) {
+            gererFichier(champFichier.files[0]);
         }
     });
 }
