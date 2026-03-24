@@ -1,4 +1,4 @@
-<!-- Template pour le conteneur global des résultats de temps de réponse -->
+<!-- Templates pour l'Analyse du Temps de Réponse -->
 <template id="template-resultats-temps-reponse">
     <div class="border-t border-white/10 pt-8 mt-12 animate-fade-in-up">
         <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3 pt-6">
@@ -10,10 +10,8 @@
             <span>Résultats du Temps de Réponse</span>
         </h3>
         
-        <!-- Zone où seront injectées les cartes des participants -->
         <div class="flex flex-col md:flex-row gap-6 mb-10 zone-cartes-auteurs"></div>
 
-        <!-- Zone du Top 5 -->
         <div>
             <h4 class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4 px-2">🏆 Top 5 des records d'attente (nuits exclues)</h4>
             <div class="bg-black/20 rounded-2xl border border-white/5 overflow-hidden zone-top5"></div>
@@ -21,7 +19,6 @@
     </div>
 </template>
 
-<!-- Template pour une carte de statistiques d'un participant -->
 <template id="template-carte-auteur">
     <div class="bg-black/20 rounded-xl p-5 border border-white/5 flex-1 relative overflow-hidden group">
         <div class="absolute -top-10 -right-10 size-20 bg-indigo-500/10 blur-3xl rounded-full group-hover:bg-indigo-500/30 transition-all"></div>
@@ -52,7 +49,6 @@
     </div>
 </template>
 
-<!-- Template pour une ligne du Top 5 -->
 <template id="template-ligne-top5">
     <div class="flex items-center justify-between hover:bg-white/10 transition px-4 py-3 rounded-lg border-b border-white/5 last:border-0">
         <div class="flex items-center gap-3">

@@ -13,36 +13,21 @@
  * 3. Auteur
  * 4. Contenu du message
  */
-const EXPRESSION_REGULIERE_WHATSAPP = /^\[(\d{2}\/\d{2}\/\d{4}),?\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.+)$/;
+const EXPRESSION_REGULIERE_WHATSAPP = /^\[(\d{2}\/\d{2}\/\d{2,4}),?\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.+)$/;
 
-/**
- * Analyse un fichier texte et retourne une collection de messages structurés.
- *
- * @param {File} fichier - Fichier WhatsApp au format texte.
- * @returns {Promise<Array>} - Collection d'objets { date, heure, auteur, message }.
- */
 export function analyserFichier(fichier) {
+    // Si le contenu est déjà présent (ex: relecture depuis l'historique via Fetch)
+    if (fichier.content) {
+        return Promise.resolve(extraireMessages(fichier.content));
+    }
+
+    // Sinon, lecture classique via FileReader (Import Drag & Drop)
     return new Promise((resolve, reject) => {
         const lecteur = new FileReader();
 
         lecteur.onload = (evenement) => {
             const contenu = evenement.target.result;
-            const messages = [];
-            const lignes = contenu.split(/\r?\n/);
-
-            lignes.forEach((ligne) => {
-                const correspondance = ligne.trim().match(EXPRESSION_REGULIERE_WHATSAPP);
-                if (correspondance) {
-                    messages.push({
-                        date: correspondance[1],
-                        heure: correspondance[2],
-                        auteur: correspondance[3],
-                        message: correspondance[4],
-                    });
-                }
-            });
-
-            resolve(messages);
+            resolve(extraireMessages(contenu));
         };
 
         lecteur.onerror = () => {
@@ -51,4 +36,28 @@ export function analyserFichier(fichier) {
 
         lecteur.readAsText(fichier);
     });
+}
+
+/**
+ * Logique interne de découpage et de matching des messages.
+ * @param {string} contenu - Texte brut du chat.
+ * @returns {Array} - Liste des messages structurés.
+ */
+function extraireMessages(contenu) {
+    const messages = [];
+    const lignes = contenu.split(/\r?\n/);
+
+    lignes.forEach((ligne) => {
+        const correspondance = ligne.trim().match(EXPRESSION_REGULIERE_WHATSAPP);
+        if (correspondance) {
+            messages.push({
+                date: correspondance[1],
+                heure: correspondance[2],
+                auteur: correspondance[3],
+                message: correspondance[4],
+            });
+        }
+    });
+
+    return messages;
 }

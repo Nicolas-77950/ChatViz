@@ -8,6 +8,8 @@ use App\DTOs\SuppressionFichierDTO;
 use App\Actions\Dashboard\RecupererFichiersRecentsAction;
 use App\Actions\Dashboard\EnregistrerFichierChatAction;
 use App\Actions\Dashboard\SupprimerFichierChatAction;
+use App\Actions\Dashboard\LireContenuFichierAction;
+use App\DTOs\FichierHistoriqueDTO;
 
 class DashboardController extends Controller
 {
@@ -29,6 +31,10 @@ class DashboardController extends Controller
         $dto = AnalyseFichierDTO::depuisRequete($request);
         $action->execute($dto);
 
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Fichier enregistré avec succès.'], 200);
+        }
+
         return redirect()->route('dashboard')->with('success', 'Fichier prêt pour l\'analyse.');
     }
 
@@ -44,5 +50,21 @@ class DashboardController extends Controller
         }
 
         return back()->with('error', 'Action non autorisée sur ce fichier.');
+    }
+
+    /**
+     * Retourne le contenu d'un fichier chat pour relecture/analyse.
+     */
+    public function show(Request $request, LireContenuFichierAction $action)
+    {
+        $dto = FichierHistoriqueDTO::depuisRequete($request);
+        $contenu = $action->execute($dto);
+
+        if ($contenu === null) {
+            return response()->json(['error' => 'Fichier non trouvé.'], 404);
+        }
+
+        return response($contenu, 200)
+            ->header('Content-Type', 'text/plain');
     }
 }

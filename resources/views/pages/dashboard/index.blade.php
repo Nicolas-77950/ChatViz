@@ -80,7 +80,11 @@
                                             </div>
                                         </div>
                                         <div class="flex items-center gap-3">
-                                            <button class="bg-indigo-500 hover:bg-indigo-400 text-white px-5 py-2 rounded-xl text-sm font-bold opacity-0 group-hover:opacity-100 transition-all shadow-lg transform translate-x-4 group-hover:translate-x-0">
+                                            <button 
+                                                class="btn-voir-historique bg-indigo-500 text-white px-6 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-500/30 hover:bg-indigo-400 hover:scale-105 active:scale-95"
+                                                data-path="{{ $file['path'] }}"
+                                                data-name="{{ $file['name'] }}"
+                                            >
                                                 Voir
                                             </button>
                                             
@@ -149,5 +153,8 @@
             </div>
         </div>
     </div>
-    @include('pages.dashboard.partials.templates')
+    {{-- Injection des Templates d'Analyse (Modulaires) --}}
+    @include('pages.dashboard.partials.responseTime')
+    @include('pages.dashboard.partials.activity')
+    @include('pages.dashboard.partials.emojis')
 </x-app-layout>

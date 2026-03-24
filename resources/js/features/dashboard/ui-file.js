@@ -5,6 +5,10 @@
 
 import { calculerTempsReponse } from './analysis/responseTime/logiqueTempsReponse.js';
 import { afficherTempsReponse } from './analysis/responseTime/renduTempsReponse.js';
+import { calculerActivite } from './analysis/activity/logiqueActivite.js';
+import { afficherActivite } from './analysis/activity/renduActivite.js';
+import { calculerEmojis } from './analysis/emojis/logiqueEmojis.js';
+import { afficherEmojis } from './analysis/emojis/renduEmojis.js';
 
 /**
  * Affiche l'interface de sélection d'analyse pour le fichier chargé.
@@ -43,7 +47,7 @@ export function afficherCarteFichier(nomFichier, messages) {
 
             <p class="text-slate-300 font-medium mb-4">Analyse disponible :</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div id="btn-temps-reponse" class="bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 p-6 rounded-2xl transition cursor-pointer flex flex-col group">
                     <span class="text-3xl mb-3">⏱️</span>
                     <h4 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Temps de réponse</h4>
@@ -51,11 +55,18 @@ export function afficherCarteFichier(nomFichier, messages) {
                     <div class="mt-auto btn-primary px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Lancer l'analyse</div>
                 </div>
                 
-                <div class="bg-white/5 border border-white/10 p-6 rounded-2xl flex flex-col items-start opacity-50 cursor-not-allowed">
+                <div id="btn-activite" class="bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 p-6 rounded-2xl transition cursor-pointer flex flex-col group">
                     <span class="text-3xl mb-3">📊</span>
-                    <h4 class="text-lg font-bold text-white">Activité (Prochainement)</h4>
-                    <p class="text-slate-400 text-sm mt-2 mb-4">Statistiques sur les périodes d'activité.</p>
-                    <div class="mt-auto bg-white/10 text-white/50 px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Bientôt 🔒</div>
+                    <h4 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Activité</h4>
+                    <p class="text-slate-400 text-sm mt-2 mb-4">Statistiques sur les périodes d'activité et d'échange.</p>
+                    <div class="mt-auto btn-primary px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Lancer l'analyse</div>
+                </div>
+
+                <div id="btn-emojis" class="bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 p-6 rounded-2xl transition cursor-pointer flex flex-col group">
+                    <span class="text-3xl mb-3">😂</span>
+                    <h4 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Émojis</h4>
+                    <p class="text-slate-400 text-sm mt-2 mb-4">Le top 5 des émojis les plus utilisés par chacun.</p>
+                    <div class="mt-auto btn-primary px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Lancer l'analyse</div>
                 </div>
             </div>
             
@@ -72,5 +83,15 @@ export function afficherCarteFichier(nomFichier, messages) {
     document.getElementById('btn-temps-reponse').addEventListener('click', () => {
         const resultats = calculerTempsReponse(messages);
         afficherTempsReponse(resultats, 'conteneur-resultat-specifique');
+    });
+
+    document.getElementById('btn-activite').addEventListener('click', () => {
+        const resultats = calculerActivite(messages);
+        afficherActivite(resultats, 'conteneur-resultat-specifique');
+    });
+
+    document.getElementById('btn-emojis').addEventListener('click', () => {
+        const resultats = calculerEmojis(messages);
+        afficherEmojis(resultats, 'conteneur-resultat-specifique');
     });
 }

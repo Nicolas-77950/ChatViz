@@ -32,8 +32,39 @@ async function gererFichier(fichier) {
 
     const messages = await analyserFichier(fichier);
     
-    // Affichage de l'interface de choix d'analyse
+    // Affichage immédiat de l'interface d'analyse (Feedback instantané)
     afficherCarteFichier(fichier.name, messages);
+
+    // Envoi silencieux au serveur pour l'historique
+    sauvegarderVersHistorique(fichier);
+}
+
+/**
+ * Envoie le fichier au serveur pour qu'il apparaisse dans l'historique.
+ * @param {File} fichier 
+ */
+async function sauvegarderVersHistorique(fichier) {
+    const formData = new FormData();
+    formData.append('chat_file', fichier);
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+
+    try {
+        const reponse = await fetch('/analyze', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (reponse.ok) {
+            console.log("Fichier sauvegardé dans l'historique.");
+            // On pourrait rafraîchir la liste de l'historique ici si besoin
+        }
+    } catch (error) {
+        console.error("Erreur lors de la sauvegarde :", error);
+    }
 }
 
 /**
@@ -91,5 +122,51 @@ export function initImport() {
         if (champFichier.files.length > 0) {
             gererFichier(champFichier.files[0]);
         }
+    });
+
+    // Activation des boutons de l'historique existant
+    explorerHistorique();
+}
+
+/**
+ * Attache les événements aux boutons "Voir" de la liste d'historique (Blade).
+ */
+function explorerHistorique() {
+    const boutonsVoir = document.querySelectorAll('.btn-voir-historique');
+    
+    boutonsVoir.forEach(bouton => {
+        bouton.addEventListener('click', async (e) => {
+            const chemin = bouton.getAttribute('data-path');
+            const nom = bouton.getAttribute('data-name');
+            
+            if (!chemin) return;
+
+            // Petit effet de chargement sur le bouton
+            const texteOrigine = bouton.textContent;
+            bouton.textContent = '...';
+            bouton.disabled = true;
+
+            try {
+                const reponse = await fetch(`/chat-content?path=${encodeURIComponent(chemin)}`);
+                if (!reponse.ok) throw new Error('Erreur lors de la récupération');
+                
+                const texte = await reponse.text();
+                
+                // On crée un faux objet File pour réutiliser gererFichier ou on appelle directement l'analyse
+                // Option simple : on simule l'objet fichier
+                const fauxFichier = { name: nom, content: texte };
+                
+                // On réutilise la logique avec l'import statique du haut de fichier
+                const messages = await analyserFichier(fauxFichier);
+                afficherCarteFichier(nom, messages);
+                
+            } catch (err) {
+                console.error(err);
+                alert('Impossible de charger ce fichier.');
+            } finally {
+                bouton.textContent = texteOrigine;
+                bouton.disabled = false;
+            }
+        });
     });
 }

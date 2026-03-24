@@ -23,10 +23,10 @@ class RecupererFichiersRecentsAction
             foreach ($tousLesFichiers as $fichier) {
                 if (str_starts_with($fichier, $prefixeUtilisateur)) {
                     $fichiers[] = [
-                        'nom' => basename($fichier),
-                        'chemin' => $fichier,
+                        'name' => basename($fichier),
+                        'path' => $fichier,
                         'date' => date('d/m/Y H:i', Storage::lastModified($fichier)),
-                        'taille' => round(Storage::size($fichier) / 1024, 2) . ' KB'
+                        'size' => round(Storage::size($fichier) / 1024, 2) . ' KB'
                     ];
                 }
             }
