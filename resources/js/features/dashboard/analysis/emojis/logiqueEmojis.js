@@ -5,40 +5,41 @@
 
 /**
  * Analyse les messages pour classer les émojis par auteur.
- * @param {Array} messages - Liste des messages.
+ * @param {Array} listeMessages - Liste des messages structurés.
  * @returns {Object} - Top émojis par auteur.
  */
-export function calculerEmojis(messages) {
-    const statsParAuteur = {};
+export function calculerEmojis(listeMessages) {
+    const statistiquesParAuteur = {};
     
-    // Regex plus robuste pour capturer tous les types d'émojis (y compris modificateurs et séquences)
-    const regexEmoji = /\p{Emoji_Presentation}|\p{Emoji}\uFE0F/gu;
+    // Regex pour capturer les émojis (présentation standard ou séquences)
+    const expressionEmoji = /\p{Emoji_Presentation}|\p{Emoji}\uFE0F/gu;
 
-    messages.forEach(msg => {
-        if (!statsParAuteur[msg.auteur]) {
-            statsParAuteur[msg.auteur] = {};
+    listeMessages.forEach(unMessage => {
+        const nomAuteur = unMessage.auteur;
+        if (!statistiquesParAuteur[nomAuteur]) {
+            statistiquesParAuteur[nomAuteur] = {};
         }
 
-        const emojistrouves = msg.message.match(regexEmoji);
-        if (emojistrouves) {
-            emojistrouves.forEach(emoji => {
-                statsParAuteur[msg.auteur][emoji] = (statsParAuteur[msg.auteur][emoji] || 0) + 1;
+        const emojisTrouves = unMessage.message.match(expressionEmoji);
+        if (emojisTrouves) {
+            emojisTrouves.forEach(chaqueEmoji => {
+                statistiquesParAuteur[nomAuteur][chaqueEmoji] = (statistiquesParAuteur[nomAuteur][chaqueEmoji] || 0) + 1;
             });
         }
     });
 
     const topsParAuteur = {};
 
-    Object.entries(statsParAuteur).forEach(([auteur, emojis]) => {
-        const trie = Object.entries(emojis)
+    Object.entries(statistiquesParAuteur).forEach(([nomAuteur, collectionEmojis]) => {
+        const emojisTries = Object.entries(collectionEmojis)
             .sort((a, b) => b[1] - a[1])
             .slice(0, 5);
 
         // On n'ajoute l'auteur que s'il a au moins un émoji détecté
-        if (trie.length > 0) {
-            topsParAuteur[auteur] = trie.map(([emoji, count]) => ({
-                emoji,
-                count
+        if (emojisTries.length > 0) {
+            topsParAuteur[nomAuteur] = emojisTries.map(([leEmoji, leNombre]) => ({
+                emoji: leEmoji,
+                count: leNombre
             }));
         }
     });

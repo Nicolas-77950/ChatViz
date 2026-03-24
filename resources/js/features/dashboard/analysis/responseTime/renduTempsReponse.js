@@ -1,67 +1,67 @@
 /**
  * renduTempsReponse.js
- * Affiche les résultats de l'analyse via les templates HTML et le DOM.
+ * Affiche les résultats de l'analyse du temps de réponse (clonage de templates).
  */
 
 /**
- * Affiche les résultats de l'analyse du temps de réponse.
- * @param {Object} resultats - Données statistiques.
- * @param {string} idCible - ID du conteneur HTML.
+ * Affiche les résulats du temps de réponse dans l'interface.
+ * @param {Object} resultatsCalculs - Données calculées (moyennes, top 5).
+ * @param {string} idElementCible - ID du conteneur HTML.
  */
-export function afficherTempsReponse(resultats, idCible) {
-    const conteneurPrincipal = document.getElementById(idCible);
+export function afficherTempsReponse(resultatsCalculs, idElementCible) {
+    const conteneurPrincipal = document.getElementById(idElementCible);
     if (!conteneurPrincipal) return;
 
     // Réinitialisation du conteneur
     conteneurPrincipal.innerHTML = '';
 
-    const statistiquesParAuteur = resultats.statsParAuteur;
-    const top5LongsTemps = resultats.top5LongsTemps;
-    const nomsDesAuteurs = Object.keys(statistiquesParAuteur);
+    const statistiquesParAuteur = resultatsCalculs.statsParAuteur;
+    const top5PlusLents = resultatsCalculs.top5LongsTemps;
+    const nomsDesParticipants = Object.keys(statistiquesParAuteur);
 
-    // Initialisation du template global
-    const templateGlobal = document.querySelector('#template-resultats-temps-reponse');
-    const cloneGlobal = templateGlobal.content.cloneNode(true);
+    // Initialisation du modèle global
+    const modeleGlobal = document.querySelector('#template-resultats-temps-reponse');
+    const instanceGlobale = modeleGlobal.content.cloneNode(true);
     
-    const zoneCartes = cloneGlobal.querySelector('.zone-cartes-auteurs');
-    const zoneTop5 = cloneGlobal.querySelector('.zone-top5');
+    const zonePourLesCartes = instanceGlobale.querySelector('.zone-cartes-auteurs');
+    const zonePourLeClassement = instanceGlobale.querySelector('.zone-top5');
 
-    // Génération des cartes descriptives par participant
-    nomsDesAuteurs.forEach((auteur) => {
-        const stats = statistiquesParAuteur[auteur];
-        const templateCarte = document.querySelector('#template-carte-auteur');
-        const cloneCarte = templateCarte.content.cloneNode(true);
+    // Génération des cartes descriptives pour chaque participant
+    nomsDesParticipants.forEach((nomAuteur) => {
+        const statsAuteur = statistiquesParAuteur[nomAuteur];
+        const modeleDeLaCarte = document.querySelector('#template-carte-auteur');
+        const instanceDeCarte = modeleDeLaCarte.content.cloneNode(true);
 
-        cloneCarte.querySelector('.initiales-auteur').textContent = auteur.substring(0, 2).toUpperCase();
-        cloneCarte.querySelector('.nom-auteur').textContent = auteur;
-        cloneCarte.querySelector('.moyenne-formatee').textContent = stats.moyenneFormatee;
-        cloneCarte.querySelector('.total-formate').textContent = stats.totalFormate;
-        cloneCarte.querySelector('.nombre-reponses').textContent = `${stats.nombreDeReponses} fois`;
+        instanceDeCarte.querySelector('.initiales-auteur').textContent = nomAuteur.substring(0, 2).toUpperCase();
+        instanceDeCarte.querySelector('.nom-auteur').textContent = nomAuteur;
+        instanceDeCarte.querySelector('.moyenne-formatee').textContent = statsAuteur.moyenneFormatee;
+        instanceDeCarte.querySelector('.total-formate').textContent = statsAuteur.totalFormate;
+        instanceDeCarte.querySelector('.nombre-reponses').textContent = `${statsAuteur.nombreDeReponses} fois`;
 
-        zoneCartes.appendChild(cloneCarte);
+        zonePourLesCartes.appendChild(instanceDeCarte);
     });
 
-    // Génération du classement des délais les plus longs
-    if (top5LongsTemps.length > 0) {
-        top5LongsTemps.forEach((item, index) => {
-            const templateLigne = document.querySelector('#template-ligne-top5');
-            const cloneLigne = templateLigne.content.cloneNode(true);
+    // Génération du top 5 des délais les plus longs
+    if (top5PlusLents.length > 0) {
+        top5PlusLents.forEach((itemLent, index) => {
+            const modeleDeLaLigne = document.querySelector('#template-ligne-top5');
+            const instanceDeLigne = modeleDeLaLigne.content.cloneNode(true);
 
-            cloneLigne.querySelector('.rang-top5').textContent = `#${index + 1}`;
-            cloneLigne.querySelector('.nom-auteur-top5').textContent = item.auteur;
-            cloneLigne.querySelector('.duree-formatee-top5').textContent = item.dureeFormatee;
+            instanceDeLigne.querySelector('.rang-top5').textContent = `#${index + 1}`;
+            instanceDeLigne.querySelector('.nom-auteur-top5').textContent = itemLent.auteur;
+            instanceDeLigne.querySelector('.duree-formatee-top5').textContent = itemLent.dureeFormatee;
 
-            zoneTop5.appendChild(cloneLigne);
+            zonePourLeClassement.appendChild(instanceDeLigne);
         });
     } else {
-        const p = document.createElement('p');
-        p.className = 'text-slate-400 italic font-medium p-4';
-        p.textContent = 'Aucune longue attente détectée.';
-        zoneTop5.appendChild(p);
+        const messageVide = document.createElement('p');
+        messageVide.className = 'text-slate-400 italic font-medium p-4';
+        messageVide.textContent = 'Aucun délai notable détecté.';
+        zonePourLeClassement.appendChild(messageVide);
     }
 
-    // Injection dans le DOM
-    conteneurPrincipal.appendChild(cloneGlobal);
+    // Injection finale dans le DOM
+    conteneurPrincipal.appendChild(instanceGlobale);
 
     // Défilement fluide vers les résultats
     conteneurPrincipal.scrollIntoView({ behavior: 'smooth', block: 'center' });

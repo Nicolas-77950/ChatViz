@@ -1,25 +1,25 @@
 /**
  * volumeMeter.js
- * Algorithme 1 - Le "Volume-Meter"
+ * Algorithme de calcul du volume de discussion.
  * Calcule le nombre total de messages envoyés par chaque personne.
  *
- * @param {Array} messages - Tableau d'objets { date, heure, auteur, message }
+ * @param {Array} listeMessages - Tableau d'objets { date, heure, auteur, message }
  * @returns {Object} - Objet du type { "Auteur 1": 1500, "Auteur 2": 1200 }
  */
-export function calculerVolumeMeter(messages) {
+export function calculerVolumeMeter(listeMessages) {
     const volumeParAuteur = {};
 
-    messages.forEach((msg) => {
-        const auteur = msg.auteur;
+    listeMessages.forEach((messageUnique) => {
+        const nomDeLAuteur = messageUnique.auteur;
         
-        // On ajoute +1 à l'auteur correspondant
-        if (!volumeParAuteur[auteur]) {
-            volumeParAuteur[auteur] = 0;
+        // On incrémente le compteur pour cet auteur
+        if (!volumeParAuteur[nomDeLAuteur]) {
+            volumeParAuteur[nomDeLAuteur] = 0;
         }
-        volumeParAuteur[auteur]++;
+        volumeParAuteur[nomDeLAuteur]++;
     });
 
-    console.log("[ChatViz] Calcul du Volume-Meter terminé :", volumeParAuteur);
+    console.log("[ChatViz] Calcul du volume de parole terminé.");
 
     return volumeParAuteur;
 }

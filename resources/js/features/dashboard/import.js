@@ -1,14 +1,15 @@
 /**
  * import.js
- * Responsabilité : Gérer uniquement l'interface utilisateur du Drag & Drop
- * et du bouton d'importation. Délègue l'analyse à parser.js.
+ * Responsabilité : Gérer l'interface utilisateur du Drag & Drop et du bouton d'importation.
  */
 
 import { analyserFichier } from './parser.js';
 import { afficherCarteFichier } from './ui-file.js';
 
 /**
- * Affiche ou cache l'overlay bleu lors du survol d'un fichier.
+ * Affiche ou cache l'overlav bleu lors du survol d'un fichier.
+ * @param {HTMLElement} element - L'overlay cible.
+ * @param {boolean} estVisible - L'état de visibilité souhaité.
  */
 function reglerAffichageOverlay(element, estVisible) {
     if (estVisible) {
@@ -21,55 +22,59 @@ function reglerAffichageOverlay(element, estVisible) {
 }
 
 /**
- * @function gererFichier
  * Lit le fichier, l'analyse et lance l'affichage de l'interface d'analyse.
+ * @param {File|Object} fichierARecevoir - Le fichier sélectionné.
  */
-async function gererFichier(fichier) {
-    if (!fichier.name.endsWith('.txt')) {
-        alert("Oups ! Seuls les fichiers .txt (export WhatsApp) sont acceptés.");
-        return;
+async function gererLeFichier(fichierARecevoir) {
+    if (!fichierARecevoir.name || !fichierARecevoir.name.endsWith('.txt')) {
+        // En cas de rechargement d'historique, le nom n'est pas forcément dans l'objet File classique
+        const nomDuFichier = fichierARecevoir.name || "Discussion WhatsApp";
+        if (nomDuFichier !== "Discussion WhatsApp" && !nomDuFichier.endsWith('.txt')) {
+            alert("Oups ! Seuls les fichiers .txt sont acceptés.");
+            return;
+        }
     }
 
-    const messages = await analyserFichier(fichier);
+    const tableauMessages = await analyserFichier(fichierARecevoir);
     
-    // Affichage immédiat de l'interface d'analyse (Feedback instantané)
-    afficherCarteFichier(fichier.name, messages);
+    // Affichage immédiat de l'interface (Feedback instantané)
+    afficherCarteFichier(fichierARecevoir.name || "Discussion chargée", tableauMessages);
 
-    // Envoi silencieux au serveur pour l'historique
-    sauvegarderVersHistorique(fichier);
+    // Envoi silencieux au serveur pour l'historique (uniquement si c'est un vrai fichier importé)
+    if (fichierARecevoir instanceof File) {
+        sauvegarderVersLHistorique(fichierARecevoir);
+    }
 }
 
 /**
- * Envoie le fichier au serveur pour qu'il apparaisse dans l'historique.
- * @param {File} fichier 
+ * Envoie le fichier au serveur pour l'ajouter à l'historique utilisateur.
+ * @param {File} fichier - Le fichier brut à envoyer.
  */
-async function sauvegarderVersHistorique(fichier) {
-    const formData = new FormData();
-    formData.append('chat_file', fichier);
-    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+async function sauvegarderVersLHistorique(fichier) {
+    const donneesFormulaire = new FormData();
+    donneesFormulaire.append('chat_file', fichier);
+    donneesFormulaire.append('_token', document.querySelector('meta[name="csrf-token"]').content);
 
     try {
-        const reponse = await fetch('/analyze', {
+        const reponseServeur = await fetch('/analyze', {
             method: 'POST',
-            body: formData,
+            body: donneesFormulaire,
             headers: {
                 'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest'
             }
         });
 
-        if (reponse.ok) {
-            console.log("Fichier sauvegardé dans l'historique.");
-            // On pourrait rafraîchir la liste de l'historique ici si besoin
+        if (reponseServeur.ok) {
+            console.log("[ChatViz] Fichier sauvegardé dans l'historique.");
         }
-    } catch (error) {
-        console.error("Erreur lors de la sauvegarde :", error);
+    } catch (erreur) {
+        console.error("[ChatViz] Erreur de sauvegarde :", erreur);
     }
 }
 
 /**
- * @function initImport
- * Point d'entrée pour activer l'importation (Drag&Drop + Clic).
+ * Initialise les détecteurs d'événements (Drag&Drop + Clic).
  */
 export function initImport() {
     const overlayDeDepot = document.getElementById('drop-overlay');
@@ -77,11 +82,11 @@ export function initImport() {
 
     if (!overlayDeDepot || !champFichier) return;
 
-    let compteurDrag = 0;
+    let compteurDeDrag = 0;
 
-    // Blocage des comportements par défaut du navigateur
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(nomEvenement => {
-        window.addEventListener(nomEvenement, (e) => {
+    // Blocage par défaut
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(nomDAction => {
+        window.addEventListener(nomDAction, (e) => {
             e.preventDefault();
             e.stopPropagation();
         }, false);
@@ -89,82 +94,73 @@ export function initImport() {
 
     // Apparition de l'overlay au survol
     window.addEventListener('dragenter', () => {
-        compteurDrag++;
-        if (compteurDrag === 1) reglerAffichageOverlay(overlayDeDepot, true);
+        compteurDeDrag++;
+        if (compteurDeDrag === 1) reglerAffichageOverlay(overlayDeDepot, true);
     });
 
     window.addEventListener('dragleave', () => {
-        compteurDrag--;
-        if (compteurDrag <= 0) {
-            compteurDrag = 0;
+        compteurDeDrag--;
+        if (compteurDeDrag <= 0) {
+            compteurDeDrag = 0;
             reglerAffichageOverlay(overlayDeDepot, false);
         }
     });
 
-    // Indique que le fichier peut être copié
     window.addEventListener('dragover', (e) => {
         e.dataTransfer.dropEffect = 'copy';
     });
 
-    // Réception du fichier par glisser-déposer
     window.addEventListener('drop', (e) => {
-        compteurDrag = 0;
+        compteurDeDrag = 0;
         reglerAffichageOverlay(overlayDeDepot, false);
 
-        const fichiers = e.dataTransfer.files;
-        if (fichiers && fichiers.length > 0) {
-            gererFichier(fichiers[0]);
+        const listeFichiers = e.dataTransfer.files;
+        if (listeFichiers && listeFichiers.length > 0) {
+            gererLeFichier(listeFichiers[0]);
         }
     });
 
-    // Réception du fichier via le bouton classique
     champFichier.addEventListener('change', () => {
         if (champFichier.files.length > 0) {
-            gererFichier(champFichier.files[0]);
+            gererLeFichier(champFichier.files[0]);
         }
     });
 
-    // Activation des boutons de l'historique existant
-    explorerHistorique();
+    explorerLHistorique();
 }
 
 /**
- * Attache les événements aux boutons "Voir" de la liste d'historique (Blade).
+ * Attache les événements aux boutons "Voir" de la liste d'historique.
  */
-function explorerHistorique() {
-    const boutonsVoir = document.querySelectorAll('.btn-voir-historique');
+function explorerLHistorique() {
+    const tousLesBoutonsVoir = document.querySelectorAll('.btn-voir-historique');
     
-    boutonsVoir.forEach(bouton => {
-        bouton.addEventListener('click', async (e) => {
-            const chemin = bouton.getAttribute('data-path');
-            const nom = bouton.getAttribute('data-name');
+    tousLesBoutonsVoir.forEach(bouton => {
+        bouton.addEventListener('click', async () => {
+            const cheminDuFichier = bouton.getAttribute('data-path');
+            const nomDuFichier = bouton.getAttribute('data-name');
             
-            if (!chemin) return;
+            if (!cheminDuFichier) return;
 
-            // Petit effet de chargement sur le bouton
-            const texteOrigine = bouton.textContent;
+            const texteOriginal = bouton.textContent;
             bouton.textContent = '...';
             bouton.disabled = true;
 
             try {
-                const reponse = await fetch(`/chat-content?path=${encodeURIComponent(chemin)}`);
-                if (!reponse.ok) throw new Error('Erreur lors de la récupération');
+                const reponseSelection = await fetch(`/chat-content?path=${encodeURIComponent(cheminDuFichier)}`);
+                if (!reponseSelection.ok) throw new Error('Impossible de charger le fichier.');
                 
-                const texte = await reponse.text();
+                const contenuTexte = await reponseSelection.text();
                 
-                // On crée un faux objet File pour réutiliser gererFichier ou on appelle directement l'analyse
-                // Option simple : on simule l'objet fichier
-                const fauxFichier = { name: nom, content: texte };
-                
-                // On réutilise la logique avec l'import statique du haut de fichier
-                const messages = await analyserFichier(fauxFichier);
-                afficherCarteFichier(nom, messages);
+                // Simulation d'un fichier pour réutiliser la même logique
+                const fauxFichier = { name: nomDuFichier, content: contenuTexte };
+                await gererLeFichier(fauxFichier);
                 
             } catch (err) {
                 console.error(err);
-                alert('Impossible de charger ce fichier.');
+                alert('Erreur lors du chargement de l\'historique.');
             } finally {
-                bouton.textContent = texteOrigine;
+                bouton.textContent = texteOriginal;
                 bouton.disabled = false;
             }
         });

@@ -8,7 +8,9 @@ Route::get('/', function () {
 });
 
 // Inclusion des routes organisées par fonctionnalités
-require __DIR__ . '/web/dashboard.php';
+Route::middleware(['auth', 'verified'])->group(function () {
+    require __DIR__ . '/web/dashboard.php';
+});
 
 // Routes publiques
 Route::get('/menu', function () { return view('welcome'); })->name('menu');
