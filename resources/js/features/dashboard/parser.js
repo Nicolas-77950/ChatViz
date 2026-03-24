@@ -3,17 +3,10 @@
  * Décode les fichiers d'exportation WhatsApp (.txt) pour structurer les messages.
  */
 
-/**
- * Expression régulière pour extraire les informations de chaque ligne.
- * Format attendu : [DATE HEURE] AUTEUR: MESSAGE
- * 
- * Groupes de capture :
- * 1. Date (JJ/MM/AAAA)
- * 2. Heure (HH:MM:SS)
- * 3. Auteur
- * 4. Contenu du message
- */
-const EXPRESSION_REGULIERE_WHATSAPP = /^\[(\d{2}\/\d{2}\/\d{2,4}),?\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.+)$/;
+// Expressions régulières pour différents formats
+const REGEX_STANDART = /^\[(\d{2}\/\d{2}\/\d{2,4}),?\s(\d{2}:\d{2}:\d{2})\]\s([^:]+):\s(.+)$/;
+const REGEX_PARENTHESES = /^([^(\n]+)\s?\((\d{1,2}:\d{2})\)\s?:\s?(.+)$/;
+const REGEX_SIMPLE = /^([^:]+)\s?:\s?(.+)$/;
 
 export function analyserFichier(fichier) {
     // Si le contenu est déjà présent (ex: relecture depuis l'historique via Fetch)
@@ -48,16 +41,52 @@ function extraireMessages(contenu) {
     const lignes = contenu.split(/\r?\n/);
 
     lignes.forEach((ligne) => {
-        const correspondance = ligne.trim().match(EXPRESSION_REGULIERE_WHATSAPP);
-        if (correspondance) {
+        const trimmedLigne = ligne.trim();
+        if (!trimmedLigne) return;
+        
+        // On ignore les lignes de statut pur (commençant par ...)
+        if (trimmedLigne.startsWith('...')) return;
+
+        let matchStandard = trimmedLigne.match(REGEX_STANDART);
+        let matchParentheses = trimmedLigne.match(REGEX_PARENTHESES);
+        let matchSimple = trimmedLigne.match(REGEX_SIMPLE);
+
+        // --- 1. SI C'EST UN NOUVEAU MESSAGE (FORMAT STANDARD) ---
+        if (matchStandard) {
             messages.push({
-                date: correspondance[1],
-                heure: correspondance[2],
-                auteur: correspondance[3],
-                message: correspondance[4],
+                date: matchStandard[1],
+                heure: matchStandard[2],
+                auteur: matchStandard[3].trim(),
+                message: matchStandard[4],
+                type: 'standard'
             });
+        } 
+        // --- 2. SI C'EST UN NOUVEAU MESSAGE (FORMAT PARENTHÈSES) ---
+        else if (matchParentheses) {
+            messages.push({
+                date: '01/01/1970',
+                heure: matchParentheses[2] + ':00', 
+                auteur: matchParentheses[1].trim(),
+                message: matchParentheses[3].trim(),
+                type: 'parentheses'
+            });
+        }
+        // --- 3. SI C'EST UN NOUVEAU MESSAGE (FORMAT SIMPLE) ---
+        else if (matchSimple && matchSimple[1].length < 40) {
+            messages.push({
+                date: '01/01/1970',
+                heure: '00:00:00',
+                auteur: matchSimple[1].trim(),
+                message: matchSimple[2].trim(),
+                type: 'simple'
+            });
+        }
+        // --- 4. SI C'EST LA SUITE DU MESSAGE PRÉCÉDENT (MULTI-LIGNE) ---
+        else if (messages.length > 0) {
+            messages[messages.length - 1].message += '\n' + trimmedLigne;
         }
     });
 
+    console.log(`[ChatViz] Parsing terminé : ${messages.length} messages extraits.`);
     return messages;
 }

@@ -9,6 +9,8 @@ import { calculerActivite } from './analysis/activity/logiqueActivite.js';
 import { afficherActivite } from './analysis/activity/renduActivite.js';
 import { calculerEmojis } from './analysis/emojis/logiqueEmojis.js';
 import { afficherEmojis } from './analysis/emojis/renduEmojis.js';
+import { calculerVolumeMeter } from './analysis/volumeMeter/logiqueVolumeMeter.js';
+import { afficherVolumeMeter } from './analysis/volumeMeter/renduVolumeMeter.js';
 
 /**
  * Affiche l'interface de sélection d'analyse pour le fichier chargé.
@@ -47,26 +49,33 @@ export function afficherCarteFichier(nomFichier, messages) {
 
             <p class="text-slate-300 font-medium mb-4">Analyse disponible :</p>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div id="btn-volume-meter" class="bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 p-6 rounded-2xl transition cursor-pointer flex flex-col group">
+                    <span class="text-3xl mb-3">📊</span>
+                    <h4 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Volume-Meter</h4>
+                    <p class="text-slate-400 text-sm mt-2 mb-4">Répartition de la parole entre les participants.</p>
+                    <div class="mt-auto btn-primary px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Lancer</div>
+                </div>
+
                 <div id="btn-temps-reponse" class="bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 p-6 rounded-2xl transition cursor-pointer flex flex-col group">
                     <span class="text-3xl mb-3">⏱️</span>
                     <h4 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Temps de réponse</h4>
                     <p class="text-slate-400 text-sm mt-2 mb-4">Analyse des délais de réponse entre les participants.</p>
-                    <div class="mt-auto btn-primary px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Lancer l'analyse</div>
+                    <div class="mt-auto btn-primary px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Lancer</div>
                 </div>
                 
                 <div id="btn-activite" class="bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 p-6 rounded-2xl transition cursor-pointer flex flex-col group">
-                    <span class="text-3xl mb-3">📊</span>
+                    <span class="text-3xl mb-3">📈</span>
                     <h4 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Activité</h4>
                     <p class="text-slate-400 text-sm mt-2 mb-4">Statistiques sur les périodes d'activité et d'échange.</p>
-                    <div class="mt-auto btn-primary px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Lancer l'analyse</div>
+                    <div class="mt-auto btn-primary px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Lancer</div>
                 </div>
 
                 <div id="btn-emojis" class="bg-white/5 border border-white/10 hover:border-indigo-500/50 hover:bg-white/10 p-6 rounded-2xl transition cursor-pointer flex flex-col group">
                     <span class="text-3xl mb-3">😂</span>
                     <h4 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Émojis</h4>
                     <p class="text-slate-400 text-sm mt-2 mb-4">Le top 5 des émojis les plus utilisés par chacun.</p>
-                    <div class="mt-auto btn-primary px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Lancer l'analyse</div>
+                    <div class="mt-auto btn-primary px-4 py-2 rounded-full text-sm font-bold w-max mx-auto">Lancer</div>
                 </div>
             </div>
             
@@ -78,6 +87,11 @@ export function afficherCarteFichier(nomFichier, messages) {
         conteneurDirect.innerHTML = '';
         conteneurDirect.classList.add('hidden');
         if (conteneurHistorique) conteneurHistorique.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-volume-meter').addEventListener('click', () => {
+        const resultats = calculerVolumeMeter(messages);
+        afficherVolumeMeter(resultats, 'conteneur-resultat-specifique');
     });
 
     document.getElementById('btn-temps-reponse').addEventListener('click', () => {
@@ -95,3 +109,4 @@ export function afficherCarteFichier(nomFichier, messages) {
         afficherEmojis(resultats, 'conteneur-resultat-specifique');
     });
 }
+
