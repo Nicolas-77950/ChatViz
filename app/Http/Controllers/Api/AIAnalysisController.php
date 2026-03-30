@@ -11,7 +11,7 @@ use App\Actions\Dashboard\RecupererFichiersRecentsAction;
 class AIAnalysisController extends Controller
 {
     /**
-     * Affiche la page Analyse (interface IA)
+     * Affiche la page Analyse (interface IA locale)
      */
     public function index(RecupererFichiersRecentsAction $action)
     {
@@ -20,16 +20,8 @@ class AIAnalysisController extends Controller
     }
 
     /**
-     * Affiche le Dashboard (historique)
-     */
-    public function dashboard(RecupererFichiersRecentsAction $action)
-    {
-        $files = $action->execute();
-        return view('analyse.analyse', ['files' => $files]);
-    }
-
-    /**
-     * Traitement de l'IA (Mistral)
+     * Traitement de l'IA Locale (Ollama - Llama 3)
+     * 100% Hors-ligne et privé.
      */
     public function generateVerdict(Request $request)
     {
@@ -40,61 +32,73 @@ class AIAnalysisController extends Controller
             return response()->json(['error' => 'Aucun message reçu pour analyse'], 400);
         }
 
-        $apiKey = config('services.google.gemini_api_key');
-        if (empty($apiKey)) {
-            return response()->json(['error' => 'La clé API Gemini est manquante dans votre fichier .env'], 500);
-        }
-
-        $slice = array_slice($messages, -500); // Gemini gère plus de contexte
+        // On limite à 80 messages pour rester rapide sur une IA locale (8B paramètres)
+        $slice = array_slice($messages, -80);
         $chatHistory = "";
 
+        // Format condensé : on retire la date/heure pour économiser des tokens
         foreach ($slice as $m) {
-            $date = $m['date'] ?? 'Inconnue';
-            $heure = $m['heure'] ?? '--:--';
             $auteur = $m['auteur'] ?? 'Anonyme';
             $texte = $m['message'] ?? '';
-            $chatHistory .= "[{$date} {$heure}] {$auteur}: {$texte}\n";
+            // On tronque les messages trop longs pour éviter d'exploser le contexte
+            if (mb_strlen($texte) > 200) {
+                $texte = mb_substr($texte, 0, 200) . '...';
+            }
+            $chatHistory .= "{$auteur}: {$texte}\n";
         }
 
-        $fullPrompt = "Tu es ChatViz, une IA experte en analyse de relations humaines. Voici un extrait de conversation WhatsApp :\n\n" . 
+        $fullPrompt = "Tu es ChatViz, un expert en analyse de relations. Voici un extrait de conversation WhatsApp :\n\n" . 
                       $chatHistory . 
-                      "\n\nQuestion de l'utilisateur : " . $userQuestion . 
-                      "\nRéponds avec précision, humour si nécessaire, et un regard d'expert.";
+                      "\n\n" . $userQuestion . 
+                      "\nRéponds UNIQUEMENT en Français. Sois CONCIS (maximum 200 mots).";
 
-        $url = "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=" . config('services.google.gemini_api_key');
+        // URL du serveur Ollama local (host.docker.internal est nécessaire pour Laravel Sail / Docker)
+        $url = env('OLLAMA_URL', "http://host.docker.internal:11434/api/generate");
 
-        $response = Http::withoutVerifying()
-            ->post($url, [
-                'contents' => [
-                    [
-                        'parts' => [
-                            ['text' => $fullPrompt]
-                        ]
+        try {
+            $response = Http::withoutVerifying()
+                ->timeout(300) // 5 minutes max pour laisser le temps à l'IA locale
+                ->post($url, [
+                    'model' => 'llama3',
+                    'prompt' => $fullPrompt,
+                    'stream' => false,
+                    'options' => [
+                        'num_predict' => 300,   // Limite la longueur de la réponse (concision)
+                        'temperature' => 0.7,   // Réponses directes et cohérentes
+                        'num_ctx' => 2048,      // Réduit la fenêtre de contexte pour accélérer le traitement
                     ]
-                ],
-                'generationConfig' => [
-                    'temperature' => 0.7,
-                    'maxOutputTokens' => 2048,
-                ]
-            ]);
+                ]);
 
-        if ($response->failed()) {
-            Log::error('Erreur Gemini API', [
-                'status' => $response->status(),
-                'response' => $response->json()
-            ]);
+            if ($response->failed()) {
+                Log::error('Erreur Ollama API', [
+                    'status' => $response->status(),
+                    'error' => $response->body()
+                ]);
+
+                return response()->json([
+                    'error' => "Impossible de contacter l'IA locale Ollama. Vérifie qu'elle tourne dans ton terminal.", 
+                ], 500);
+            }
+
+            $data = $response->json();
+            $verdict = $data['response'] ?? "Désolé, je n'ai pas pu compiler le verdict.";
 
             return response()->json([
-                'error' => 'L\'IA Gemini n\'a pas pu répondre', 
-                'details' => $response->json()
-            ], $response->status());
+                'verdict' => $verdict
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Exception Ollama', ['msg' => $e->getMessage()]);
+            
+            // Message d'erreur plus clair selon le type de problème
+            $messageErreur = "Erreur de connexion avec l'IA locale.";
+            if (str_contains($e->getMessage(), 'timed out')) {
+                $messageErreur = "L'IA locale a mis trop de temps à répondre. Réessaie avec moins de messages ou vérifie qu'Ollama n'est pas surchargé.";
+            } elseif (str_contains($e->getMessage(), 'connect')) {
+                $messageErreur = "Impossible de joindre Ollama. Lance 'ollama serve' dans ton terminal.";
+            }
+            
+            return response()->json(['error' => $messageErreur], 500);
         }
-
-        $data = $response->json();
-        $verdict = $data['candidates'][0]['content']['parts'][0]['text'] ?? "Désolé, je n'ai pas pu compiler le verdict.";
-
-        return response()->json([
-            'verdict' => $verdict
-        ]);
     }
 }

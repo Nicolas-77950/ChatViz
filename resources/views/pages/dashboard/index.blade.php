@@ -25,16 +25,7 @@
                 </div>
 
                 <div class="flex flex-wrap gap-4 flex-shrink-0">
-                    <a href="{{ route('analyse') }}" class="group relative px-8 py-4 bg-white/5 border border-white/10 rounded-full font-bold flex items-center gap-3 transition-all hover:bg-white/10 hover:border-indigo-500/50 shadow-xl overflow-hidden">
-                        <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6 text-indigo-400 group-hover:animate-pulse">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
-                        </svg>
-                        <span class="relative z-10">Analyse par IA</span>
-                    </a>
-
-                    <!-- Formulaire d'import rapide -->
+                    <!-- Formulaire d'import (unique point d'entrée) -->
                     <form action="/analyze" method="POST" enctype="multipart/form-data" id="uploadForm">
                         @csrf
                         <input type="file" name="chat_file" id="chat_file" class="hidden" accept=".txt">
@@ -170,4 +161,8 @@
     @include('pages.dashboard.partials.emojis')
     @include('pages.dashboard.partials.volumeMeter')
     @include('pages.dashboard.partials.optionsAnalyse')
+    @include('pages.dashboard.partials.sentimentIA')
+
+    {{-- Bibliothèque Markdown pour le rendu des verdicts IA --}}
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </x-app-layout>

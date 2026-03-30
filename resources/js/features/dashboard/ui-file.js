@@ -11,6 +11,8 @@ import { calculerEmojis } from './analysis/emojis/logiqueEmojis.js';
 import { afficherEmojis } from './analysis/emojis/renduEmojis.js';
 import { calculerVolumeMeter } from './analysis/volumeMeter/logiqueVolumeMeter.js';
 import { afficherVolumeMeter } from './analysis/volumeMeter/renduVolumeMeter.js';
+import { TYPES_ANALYSE, lancerAnalyseSentimentIA } from './analysis/sentimentIA/logiqueSentimentIA.js';
+import { afficherChargementIA, afficherVerdictIA, afficherErreurIA } from './analysis/sentimentIA/renduSentimentIA.js';
 
 /**
  * Affiche l'interface de sélection d'analyse pour le fichier chargé.
@@ -42,6 +44,7 @@ export function afficherCarteFichier(nomFichier, listeMessages) {
         if (conteneurHistorique) conteneurHistorique.classList.remove('hidden');
     });
 
+    // --- Boutons Algorithmiques ---
     instanceOptions.querySelector('#btn-volume-meter').addEventListener('click', () => {
         const resultatsDuVolume = calculerVolumeMeter(listeMessages);
         afficherVolumeMeter(resultatsDuVolume, 'conteneur-resultat-specifique');
@@ -62,7 +65,52 @@ export function afficherCarteFichier(nomFichier, listeMessages) {
         afficherEmojis(resultatsDesEmojis, 'conteneur-resultat-specifique');
     });
 
+    // --- Boutons d'Analyse par IA (chacun lance directement l'analyse) ---
+    const correspondanceBoutonsIA = {
+        '#btn-ia-amour': 'amour',
+        '#btn-ia-engagement': 'engagement',
+    };
+
+    Object.entries(correspondanceBoutonsIA).forEach(([selecteur, typeAnalyse]) => {
+        instanceOptions.querySelector(selecteur).addEventListener('click', () => {
+            lancerAnalyseIADirecte(listeMessages, typeAnalyse);
+        });
+    });
+
     // 4. Injection finale dans le navigateur
     conteneurDirect.innerHTML = '';
     conteneurDirect.appendChild(instanceOptions);
+}
+
+/**
+ * Lance directement une analyse IA sentimentale (chargement → appel Ollama → verdict).
+ * @param {Array} listeMessages - Messages de la conversation.
+ * @param {string} identifiantType - ID du type d'analyse choisi (ex: 'amour', 'toxicite').
+ */
+async function lancerAnalyseIADirecte(listeMessages, identifiantType) {
+    const idCible = 'conteneur-resultat-specifique';
+    const configType = TYPES_ANALYSE.find(t => t.id === identifiantType);
+    if (!configType) return;
+
+    // 1. Affichage du chargement
+    afficherChargementIA(idCible, configType.label);
+
+    try {
+        // 2. Appel à l'IA locale via le backend Laravel (100% local)
+        const resultat = await lancerAnalyseSentimentIA(listeMessages, identifiantType);
+
+        // 3. Affichage du verdict
+        afficherVerdictIA(resultat, idCible, () => {
+            // Retour : vider la zone de résultat pour pouvoir relancer
+            const conteneur = document.getElementById(idCible);
+            if (conteneur) conteneur.innerHTML = '';
+        });
+
+    } catch (erreur) {
+        console.error('[ChatViz] Erreur analyse IA :', erreur);
+        afficherErreurIA(erreur.message, idCible, () => {
+            const conteneur = document.getElementById(idCible);
+            if (conteneur) conteneur.innerHTML = '';
+        });
+    }
 }

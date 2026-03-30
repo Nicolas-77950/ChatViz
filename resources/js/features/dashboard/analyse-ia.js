@@ -109,7 +109,7 @@ async function envoyerALIntelligenceArtificielle() {
                 zoneVerdict.innerHTML = `<div class="prose prose-invert max-w-none w-full">${marked.parse(donneesRecues.verdict)}</div>`;
             }
         } else {
-            const messageErreur = donneesRecues.error || "L'IA Gemini n'a pas pu répondre.";
+            const messageErreur = donneesRecues.error || "L'IA Locale n'a pas pu répondre.";
             const detailsErreur = donneesRecues.details ? JSON.stringify(donneesRecues.details, null, 2) : "";
             throw new Error(messageErreur + (detailsErreur ? "\n" + detailsErreur : ""));
         }
