@@ -30,9 +30,9 @@
                     <span class="size-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
                     Graphique en anneau (Donut)
                 </h4>
-                <div class="flex flex-col xl:flex-row items-center justify-center w-full gap-12">
+                <div class="flex flex-col items-center justify-center w-full gap-8">
                     <!-- SVG Donut -->
-                    <div class="relative size-64 flex-shrink-0">
+                    <div class="relative size-48 md:size-56 flex-shrink-0">
                         <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
                             <!-- Background circle -->
                             <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="12" />
@@ -46,14 +46,8 @@
                     </div>
 
                     <!-- Légende Donut -->
-                    <div class="flex-1 w-full flex flex-col gap-3">
-                        <div class="flex items-center gap-2 mb-2">
-                             <span class="size-1.5 bg-slate-600 rounded-full"></span>
-                             <h5 class="text-[10px] font-black uppercase tracking-widest text-slate-500">Légende des couleurs</h5>
-                        </div>
-                        <div class="grid grid-cols-1 gap-2 zone-legende-donut">
-                            <!-- Les légendes seront ici -->
-                        </div>
+                    <div class="w-full flex flex-col gap-2 zone-legende-donut">
+                        <!-- Les légendes seront injectées ici par JS -->
                     </div>
                 </div>
             </div>
@@ -124,7 +118,7 @@
     <div class="flex items-center gap-4 bg-white/5 p-3 rounded-2xl border border-white/5 transition hover:bg-white/10 hover:border-indigo-500/20 group/legende">
         <div class="size-3 rounded-full bullet-couleur flex-shrink-0"></div>
         <div class="flex-1 min-w-0">
-            <p class="text-sm font-bold text-slate-200 truncate nom-auteur"></p>
+            <p class="text-sm font-bold text-slate-200 nom-auteur"></p>
             <p class="text-[10px] text-indigo-400/70 font-black uppercase tracking-widest label-activite"></p>
         </div>
     </div>

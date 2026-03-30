@@ -30,11 +30,11 @@ export function afficherVolumeMeter(volumeParAuteur, idElementCible) {
     // 2. Calculs et génération des graphiques
     let pourcentageCumule = 0;
     const paletteCouleursBrutes = ['#818cf8', '#f472b6', '#34d399', '#fbbf24', '#a78bfa'];
-    const degradésTailwind = [
-        'from-indigo-400 to-purple-500',
-        'from-pink-400 to-rose-500',
-        'from-emerald-400 to-teal-500',
-        'from-amber-400 to-orange-500'
+    const degradésCSS = [
+        'linear-gradient(to right, #818cf8, #a855f7)',
+        'linear-gradient(to right, #f472b6, #fb7185)',
+        'linear-gradient(to right, #34d399, #2dd4bf)',
+        'linear-gradient(to right, #fbbf24, #f97316)'
     ];
 
     tousLesAuteurs.forEach((nomAuteur, index) => {
@@ -42,7 +42,7 @@ export function afficherVolumeMeter(volumeParAuteur, idElementCible) {
         const ratioMessages = totalDesMessages > 0 ? (nbMessagesAuteur / totalDesMessages) : 0;
         const textePourcentage = (ratioMessages * 100).toFixed(1);
         const couleurBrute = paletteCouleursBrutes[index % paletteCouleursBrutes.length];
-        const classeDegradé = degradésTailwind[index % degradésTailwind.length];
+        const degradéCSS = degradésCSS[index % degradésCSS.length];
 
         // --- SEGMENT DU DONUT (Format SVG) ---
         // Rayon 40, centre 50,50
@@ -82,7 +82,8 @@ export function afficherVolumeMeter(volumeParAuteur, idElementCible) {
         instanceDeBarre.querySelector('.nom-auteur').textContent = nomAuteur;
         instanceDeBarre.querySelector('.label-messages').textContent = `${nbMessagesAuteur.toLocaleString()} messages`;
         const elementBarreProgression = instanceDeBarre.querySelector('.bar-progress');
-        elementBarreProgression.classList.add('bg-gradient-to-r', ...classeDegradé.split(' '));
+        elementBarreProgression.style.background = degradéCSS;
+        elementBarreProgression.style.boxShadow = `0 4px 15px ${couleurBrute}40`;
         elementBarreProgression.style.width = `${textePourcentage}%`;
         instanceDeBarre.querySelector('.label-pourcentage').textContent = `${textePourcentage}%`;
         zoneBarresComparaison.appendChild(instanceDeBarre);
