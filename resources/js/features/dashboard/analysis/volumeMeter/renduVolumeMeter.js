@@ -29,12 +29,12 @@ export function afficherVolumeMeter(volumeParAuteur, idElementCible) {
 
     // 2. Calculs et génération des graphiques
     let pourcentageCumule = 0;
-    const paletteCouleursBrutes = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#8b5cf6'];
+    const paletteCouleursBrutes = ['#818cf8', '#f472b6', '#34d399', '#fbbf24', '#a78bfa'];
     const degradésTailwind = [
-        'from-indigo-500 to-purple-600',
-        'from-pink-500 to-rose-600',
-        'from-emerald-500 to-teal-600',
-        'from-amber-500 to-orange-600'
+        'from-indigo-400 to-purple-500',
+        'from-pink-400 to-rose-500',
+        'from-emerald-400 to-teal-500',
+        'from-amber-400 to-orange-500'
     ];
 
     tousLesAuteurs.forEach((nomAuteur, index) => {

@@ -22,7 +22,7 @@
         </div>
 
         <!-- Grille de graphiques -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             
             <!-- Bloc A : Le Donut (SVG) -->
             <div class="bg-black/20 rounded-[2.5rem] p-8 border border-white/5 flex flex-col items-center">
@@ -46,7 +46,7 @@
                     </div>
 
                     <!-- Légende Donut -->
-                    <div class="flex-1 w-full max-w-sm flex flex-col gap-3">
+                    <div class="flex-1 w-full flex flex-col gap-3">
                         <div class="flex items-center gap-2 mb-2">
                              <span class="size-1.5 bg-slate-600 rounded-full"></span>
                              <h5 class="text-[10px] font-black uppercase tracking-widest text-slate-500">Légende des couleurs</h5>
@@ -84,7 +84,7 @@
                     <p class="text-slate-500 text-xs">Données exactes calculées à partir du fichier</p>
                 </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 zone-chiffres-bruts">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 zone-chiffres-bruts">
                 <!-- Les mini-cartes brutes seront ici -->
             </div>
         </div>
@@ -102,8 +102,8 @@
             </div>
             <span class="text-slate-500 font-mono text-xs label-messages"></span>
         </div>
-        <div class="h-6 w-full bg-white/5 rounded-full p-1 border border-white/5 group-hover:border-white/10 transition relative overflow-hidden">
-            <div class="h-full rounded-full shadow-lg transition-all duration-1000 ease-out flex items-center bar-progress" style="width: 0%">
+        <div class="h-7 w-full bg-white/5 rounded-full p-1 border border-white/5 group-hover:border-white/10 transition relative overflow-hidden">
+            <div class="h-full rounded-full shadow-lg transition-all duration-1000 ease-out flex items-center bar-progress" style="width: 0%; min-width: 8px">
                 <!-- La barre elle-même -->
             </div>
         </div>
