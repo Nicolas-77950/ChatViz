@@ -59,7 +59,7 @@ class AIAnalysisController extends Controller
             $response = Http::withoutVerifying()
                 ->timeout(300) // 5 minutes max pour laisser le temps à l'IA locale
                 ->post($url, [
-                    'model' => 'llama3',
+                    'model' => 'mistral',
                     'prompt' => $fullPrompt,
                     'stream' => false,
                     'options' => [
