@@ -103,6 +103,22 @@
                         </a>
                     </div>
                 </div>
+                    <div class="glass p-8 rounded-[2.5rem] border border-red-500/30 bg-red-500/10 shadow-2xl shadow-red-500/10">
+                    <div class="flex items-center gap-3 mb-4">
+                     <span class="size-3 bg-red-500 rounded-full animate-ping"></span>
+                     <h4 class="font-bold text-red-400">Besoin d'aide urgente ?</h4>
+                </div>
+    
+                    <p class="text-sm text-slate-400 mb-6 leading-relaxed">
+                    Victime de cyberharcèlement ou de violences en ligne ? Ne restez pas seul(e).</p>
+   
+    
+                    <div class="bg-red-500 text-white p-4 rounded-2xl text-center">
+                    <p class="text-xs uppercase font-black tracking-widest mb-1">Appelez le</p>
+                    <a href="tel:3018" class="text-3xl font-black hover:scale-105 transition-transform block">3018</a>
+                    <p class="text-[10px] mt-1 opacity-80">Gratuit, anonyme et confidentiel</p>
+                </div>
+            </div>
 
             </div>
         </div>
