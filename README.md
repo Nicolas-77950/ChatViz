@@ -25,12 +25,36 @@ La sécurité est au cœur de ChatViz. Le fichier `_chat.txt` **ne quitte jamais
 - **Front-End** : JavaScript (Analyse Regex & Graphiques)
 - **Base de données** : MySQL (Stockage JSON)
 - **Infrastructure** : Docker (Laravel Sail)
-- **IA** : API Mistral ou OpenAI
+- **IA** : Ollama (Modèles locaux : Mistral, Llama 3)
 
 ## 🚀 Installation
 
 ### Prérequis
 - Docker Desktop
+- Ollama (pour l'analyse IA locale)
+
+### 🤖 Installation de l'IA Locale (Ollama)
+
+ChatViz utilise une IA 100% locale pour garantir la confidentialité des données (RGPD). Vous devez installer Ollama sur votre machine :
+
+**Pour macOS :**
+1. Téléchargez Ollama depuis le site officiel : [https://ollama.com/download/mac](https://ollama.com/download/mac)
+2. Décompressez et glissez l'application dans votre dossier `Applications`.
+3. Lancez l'application Ollama.
+4. Ouvrez un terminal et téléchargez le modèle Mistral :
+   ```bash
+   ollama run mistral
+   ```
+
+**Pour Windows :**
+1. Téléchargez Ollama depuis le site officiel : [https://ollama.com/download/windows](https://ollama.com/download/windows)
+2. Exécutez l'installeur `.exe`.
+3. Ouvrez l'Invite de commandes (cmd) ou PowerShell et téléchargez le modèle Mistral :
+   ```bash
+   ollama run mistral
+   ```
+
+*(Laissez ce terminal ouvert ou l'application s'exécuter en arrière-plan pendant que vous utilisez ChatViz).*
 
 ### Lancement du projet
 1. Clonez le dépôt :
