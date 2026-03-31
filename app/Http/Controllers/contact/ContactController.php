@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Contact; 
 use App\Services\Contact\PhoneNormalizer; 
+use App\Mail\ContactMessage; 
+use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
@@ -13,27 +15,25 @@ class ContactController extends Controller
     }
 
     public function store(Request $request, PhoneNormalizer $normalizer) {
+        // Validation 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email',
-            'phone' => 'required',
-            'message' => 'required',
+            'message' => 'required|string|min:5',
         ]);
 
-        // On nettoie le téléphone avec ton service
-        $cleanPhone = $normalizer->toE164($request->phone);
-
-        if (!$cleanPhone) {
-            return back()->withErrors(['phone' => 'Numéro invalide'])->withInput();
-        }
-
-        // On enregistre en base de données via le Modèle
-        Contact::create([
+        $contact = Contact::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'message' => $validated['message'],
             'status' => 'pending',
         ]);
+
+        try {
+            Mail::to('ton-email@exemple.com')->send(new ContactMessage($validated));
+        } catch (\Exception $e) {
+            report($e);
+        }
 
         return back()->with('success', 'Message envoyé avec succès !');
     }
