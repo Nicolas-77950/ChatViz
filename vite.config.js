@@ -7,8 +7,6 @@ export default defineConfig({
             input: [
                 'resources/css/app.css', 
                 'resources/js/app.js',
-                'resources/css/features/analyse.css',
-                'resources/js/features/dashboard/analyse-ia.js'
             ],
             refresh: true,
         }),

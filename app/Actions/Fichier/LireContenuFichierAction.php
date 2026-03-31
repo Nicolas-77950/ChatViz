@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Actions\Dashboard;
+namespace App\Actions\Fichier;
 
-use App\DTOs\FichierHistoriqueDTO;
+use App\DTOs\Fichier\LectureFichierDTO;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,10 +10,10 @@ class LireContenuFichierAction
 {
     /**
      * Lit et retourne le contenu d'un fichier chat appartenant à l'utilisateur.
-     * @param FichierHistoriqueDTO $dto
+     * @param LectureFichierDTO $dto
      * @return string|null
      */
-    public function execute(FichierHistoriqueDTO $dto): ?string
+    public function execute(LectureFichierDTO $dto): ?string
     {
         $nomFichier = basename($dto->chemin);
         $prefixeUtilisateur = 'chat_' . Auth::id() . '_';

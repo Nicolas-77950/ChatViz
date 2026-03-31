@@ -3,16 +3,17 @@
  * Gère l'affichage des options d'analyse après l'importation d'un fichier.
  */
 
-import { calculerTempsReponse } from './analysis/responseTime/logiqueTempsReponse.js';
-import { afficherTempsReponse } from './analysis/responseTime/renduTempsReponse.js';
-import { calculerActivite } from './analysis/activity/logiqueActivite.js';
-import { afficherActivite } from './analysis/activity/renduActivite.js';
-import { calculerEmojis } from './analysis/emojis/logiqueEmojis.js';
-import { afficherEmojis } from './analysis/emojis/renduEmojis.js';
-import { calculerVolumeMeter } from './analysis/volumeMeter/logiqueVolumeMeter.js';
-import { afficherVolumeMeter } from './analysis/volumeMeter/renduVolumeMeter.js';
-import { TYPES_ANALYSE, lancerAnalyseSentimentIA } from './analysis/sentimentIA/logiqueSentimentIA.js';
-import { afficherChargementIA, afficherVerdictIA, afficherErreurIA } from './analysis/sentimentIA/renduSentimentIA.js';
+import { calculerTempsReponse } from './analysis/algo/responseTime/logiqueTempsReponse.js';
+import { afficherTempsReponse } from './analysis/algo/responseTime/renduTempsReponse.js';
+import { calculerActivite } from './analysis/algo/activity/logiqueActivite.js';
+import { afficherActivite } from './analysis/algo/activity/renduActivite.js';
+import { calculerEmojis } from './analysis/algo/emojis/logiqueEmojis.js';
+import { afficherEmojis } from './analysis/algo/emojis/renduEmojis.js';
+import { calculerVolumeMeter } from './analysis/algo/volumeMeter/logiqueVolumeMeter.js';
+import { afficherVolumeMeter } from './analysis/algo/volumeMeter/renduVolumeMeter.js';
+import { CONFIG_AMOUR, lancerAnalyseAmour } from './analysis/IA/amour/logiqueAmour.js';
+import { CONFIG_ENGAGEMENT, lancerAnalyseEngagement } from './analysis/IA/engagement/logiqueEngagement.js';
+import { afficherChargementIA, afficherVerdictIA, afficherErreurIA } from './analysis/IA/renduIA.js';
 
 /**
  * Affiche l'interface de sélection d'analyse pour le fichier chargé.
@@ -73,7 +74,7 @@ export function afficherCarteFichier(nomFichier, listeMessages) {
 
     Object.entries(correspondanceBoutonsIA).forEach(([selecteur, typeAnalyse]) => {
         instanceOptions.querySelector(selecteur).addEventListener('click', () => {
-            lancerAnalyseIADirecte(listeMessages, typeAnalyse);
+            lancerAnalyseIADirecte(listeMessages, typeAnalyse, nomFichier);
         });
     });
 
@@ -86,18 +87,29 @@ export function afficherCarteFichier(nomFichier, listeMessages) {
  * Lance directement une analyse IA sentimentale (chargement → appel Ollama → verdict).
  * @param {Array} listeMessages - Messages de la conversation.
  * @param {string} identifiantType - ID du type d'analyse choisi (ex: 'amour', 'toxicite').
+ * @param {string} nomFichier - Nom du fichier analysé
  */
-async function lancerAnalyseIADirecte(listeMessages, identifiantType) {
+async function lancerAnalyseIADirecte(listeMessages, identifiantType, nomFichier) {
     const idCible = 'conteneur-resultat-specifique';
-    const configType = TYPES_ANALYSE.find(t => t.id === identifiantType);
-    if (!configType) return;
+    
+    let configType, fonctionLancement;
+
+    if (identifiantType === 'amour') {
+        configType = CONFIG_AMOUR;
+        fonctionLancement = lancerAnalyseAmour;
+    } else if (identifiantType === 'engagement') {
+        configType = CONFIG_ENGAGEMENT;
+        fonctionLancement = lancerAnalyseEngagement;
+    } else {
+        return;
+    }
 
     // 1. Affichage du chargement
     afficherChargementIA(idCible, configType.label);
 
     try {
         // 2. Appel à l'IA locale via le backend Laravel (100% local)
-        const resultat = await lancerAnalyseSentimentIA(listeMessages, identifiantType);
+        const resultat = await fonctionLancement(listeMessages, nomFichier);
 
         // 3. Affichage du verdict
         afficherVerdictIA(resultat, idCible, () => {

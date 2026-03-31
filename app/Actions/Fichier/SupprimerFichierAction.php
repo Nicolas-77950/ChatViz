@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Actions\Dashboard;
+namespace App\Actions\Fichier;
 
-use App\DTOs\SuppressionFichierDTO;
+use App\DTOs\Fichier\SuppressionFichierDTO;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
-class SupprimerFichierChatAction
+class SupprimerFichierAction
 {
     /**
      * Supprime de façon sécurisée un fichier après vérification d'appartenance.

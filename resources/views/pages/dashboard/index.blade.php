@@ -81,6 +81,16 @@
                                                 </p>
                                             </div>
                                         </div>
+                                        <form action="{{route('update-name')}}" method="POST" class="hidden md:flex items-center gap-2">
+                                            @csrf
+                                            <input type="hidden" name="path" value="{{ $file['path'] }}">
+                                            <input type="text" name="name" value="{{ $file['name'] }}" class="bg-black/20 text-slate-200 border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl px-4 py-2 text-sm font-medium outline-none transition-all w-48 lg:w-64 placeholder-slate-500">
+                                            <button type="submit" class="bg-white/5 text-slate-300 p-2 rounded-xl transition-all hover:bg-indigo-500 hover:text-white hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95 border border-white/10 hover:border-indigo-500/50" title="Enregistrer le nom">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                                </svg>
+                                            </button>
+                                        </form>
                                         <div class="flex items-center gap-3">
                                             <button 
                                                 class="btn-voir-historique bg-indigo-500 text-white px-6 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-500/30 hover:bg-indigo-400 hover:scale-105 active:scale-95"

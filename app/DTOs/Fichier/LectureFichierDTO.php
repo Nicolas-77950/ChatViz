@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DTOs;
+namespace App\DTOs\Fichier;
 
-class FichierHistoriqueDTO
+class LectureFichierDTO
 {
     public function __construct(
         public readonly string $chemin

@@ -1,14 +1,8 @@
 /**
- * renduSentimentIA.js
- * Gère l'affichage des résultats de l'analyse sentimentale IA.
- * Utilise les templates Blade pour un rendu cohérent avec le reste du projet.
+ * renduIA.js
+ * Gère l'affichage générique des résultats de l'IA (Amour, Engagement, etc.)
  */
 
-/**
- * Affiche l'état de chargement pendant que l'IA réfléchit.
- * @param {string} idElementCible - ID du conteneur HTML.
- * @param {string} labelAnalyse - Nom du type d'analyse en cours.
- */
 export function afficherChargementIA(idElementCible, labelAnalyse) {
     const conteneurPrincipal = document.getElementById(idElementCible);
     if (!conteneurPrincipal) return;
@@ -21,17 +15,9 @@ export function afficherChargementIA(idElementCible, labelAnalyse) {
 
     conteneurPrincipal.innerHTML = '';
     conteneurPrincipal.appendChild(instanceChargement);
-
-    // Défilement fluide vers la zone de chargement
     conteneurPrincipal.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-/**
- * Affiche le verdict final de l'IA après l'analyse.
- * @param {Object} resultatAnalyse - Objet { verdict, typeAnalyse }
- * @param {string} idElementCible - ID du conteneur HTML.
- * @param {Function} callbackRetour - Fonction appelée quand l'utilisateur veut revenir au menu.
- */
 export function afficherVerdictIA(resultatAnalyse, idElementCible, callbackRetour) {
     const conteneurPrincipal = document.getElementById(idElementCible);
     if (!conteneurPrincipal) return;
@@ -40,21 +26,16 @@ export function afficherVerdictIA(resultatAnalyse, idElementCible, callbackRetou
     if (!modeleVerdict) return;
 
     const instanceVerdict = modeleVerdict.content.cloneNode(true);
-
-    // En-tête du verdict
     instanceVerdict.querySelector('.icone-verdict').textContent = resultatAnalyse.typeAnalyse.icone;
     instanceVerdict.querySelector('.label-verdict').textContent = resultatAnalyse.typeAnalyse.label;
 
-    // Contenu Markdown du verdict rendu par marked.js
     const zoneContenuVerdict = instanceVerdict.querySelector('.contenu-verdict-ia');
     if (typeof marked !== 'undefined') {
         zoneContenuVerdict.innerHTML = marked.parse(resultatAnalyse.verdict);
     } else {
-        // Fallback si marked.js n'est pas chargé
         zoneContenuVerdict.textContent = resultatAnalyse.verdict;
     }
 
-    // Bouton retour
     instanceVerdict.querySelector('.btn-retour-menu-ia').addEventListener('click', () => {
         callbackRetour();
     });
@@ -64,12 +45,6 @@ export function afficherVerdictIA(resultatAnalyse, idElementCible, callbackRetou
     conteneurPrincipal.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/**
- * Affiche un message d'erreur dans la zone de résultat.
- * @param {string} messageErreur - Le message d'erreur à afficher.
- * @param {string} idElementCible - ID du conteneur HTML.
- * @param {Function} callbackRetour - Fonction appelée pour revenir au menu.
- */
 export function afficherErreurIA(messageErreur, idElementCible, callbackRetour) {
     const conteneurPrincipal = document.getElementById(idElementCible);
     if (!conteneurPrincipal) return;

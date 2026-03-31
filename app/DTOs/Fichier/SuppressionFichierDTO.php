@@ -1,13 +1,11 @@
 <?php
 
-namespace App\DTOs;
+namespace App\DTOs\Fichier;
 
-use Illuminate\Http\UploadedFile;
-
-class AnalyseFichierDTO
+class SuppressionFichierDTO
 {
     public function __construct(
-        public readonly UploadedFile $fichier
+        public readonly string $chemin
     ) {}
 
     /**
@@ -15,6 +13,6 @@ class AnalyseFichierDTO
      */
     public static function depuisRequete(\Illuminate\Http\Request $request): self
     {
-        return new self($request->file('chat_file'));
+        return new self($request->input('path'));
     }
 }

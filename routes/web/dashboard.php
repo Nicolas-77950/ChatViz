@@ -1,23 +1,32 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Api\AIAnalysisController;
 
-Route::controller(DashboardController::class)->group(function () {
+// Controllers réorganisés (Expertises séparées par domaine)
+use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Fichier\FichierController;
+use App\Http\Controllers\Analyse\IAController;
 
-    Route::get('/dashboard', 'index')->name('dashboard');
-    Route::post('/analyze', 'store')->name('analyze');
-    Route::post('/delete-chat', 'destroy')->name('delete-chat');
-    Route::get('/chat-content', 'show')->name('chat-content');
-});
+/**
+ * Routes du tableau de bord (authentifiées).
+ * Cette structure allège chaque contrôleur en lui attribuant un domaine métier clair.
+ */
+Route::middleware(['auth', 'verified'])->group(function () {
 
+    // --- Vue Principale (Dashboard) ---
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::controller(AIAnalysisController::class)
-    ->group(function () {
+    // --- Gestion brute des Fichiers (Import, CRUD) ---
+    Route::controller(FichierController::class)->group(function () {
+        Route::post('/analyze', 'store')->name('analyze');
+        Route::post('/delete-chat', 'destroy')->name('delete-chat');
+        Route::get('/chat-content', 'show')->name('chat-content');
+        Route::post('/update-name', 'updateName')->name('update-name');
+    });
 
-    // Nouvelles routes pour l'analyse IA
-    Route::get('/analyse', 'index')->name('analyse');
-    Route::post('/analyze-ai', 'generateVerdict')->name('analyze-ai');
+    // --- Services d'IA Locale (Analyse Ollama) ---
+    Route::controller(IAController::class)->group(function () {
+        Route::post('/analyze-ai', 'generateVerdict')->name('analyze-ai');
+    });
 
 });

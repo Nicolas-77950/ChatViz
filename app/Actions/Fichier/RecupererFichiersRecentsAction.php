@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions\Dashboard;
+namespace App\Actions\Fichier;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;

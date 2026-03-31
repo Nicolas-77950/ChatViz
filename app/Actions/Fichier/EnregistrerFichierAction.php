@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Actions\Dashboard;
+namespace App\Actions\Fichier;
 
-use App\DTOs\AnalyseFichierDTO;
+use App\DTOs\Fichier\ImportFichierDTO;
 use Illuminate\Support\Facades\Auth;
 
-class EnregistrerFichierChatAction
+class EnregistrerFichierAction
 {
     /**
      * Traite et stocke le fichier chat importé.
-     * @param AnalyseFichierDTO $dto
+     * @param ImportFichierDTO $dto
      * @return string - Le chemin du fichier stocké.
      */
-    public function execute(AnalyseFichierDTO $dto): string
+    public function execute(ImportFichierDTO $dto): string
     {
         $nomFichier = 'chat_' . Auth::id() . '_' . time() . '.txt';
         $dto->fichier->storeAs('chats', $nomFichier);
