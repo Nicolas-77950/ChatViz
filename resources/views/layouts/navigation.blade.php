@@ -19,6 +19,8 @@
                 <!-- On peut rajouter d'autres liens ici si besoin -->
                 <a href="{{ route('menu') }}" class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-white transition">Menu</a>
                 <a href="{{ route('about') }}" class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-white transition">À propos</a>
+                <a href="{{ route('contact.index') }}" class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-white transition">Contact</a>
+            
             </div>
         </div>
 
