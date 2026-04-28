@@ -14,35 +14,35 @@ import { determinerCouleurAccent, formaterLeMoment, tronquerVerdict } from './lo
  */
 function remplirWrapped(conteneur, resultats) {
     // Couleur d'accent personnalisée
-    const couleurAccent = determinerCouleurAccent(resultats.emojis);
-    conteneur.style.setProperty('--wrapped-accent', couleurAccent);
+    const couleurDAccent = determinerCouleurAccent(resultats.emojis);
+    conteneur.style.setProperty('--wrapped-accent', couleurDAccent);
 
     // --- EN-TÊTE ---
-    const titreFichier = conteneur.querySelector('.wrapped-titre-fichier');
+    const titreDuFichier = conteneur.querySelector('.wrapped-titre-fichier');
     if (resultats.nomFichier) {
         // Extraire un prénom à partir du nom de fichier (ex: "Discussion WhatsApp avec Marie.txt" → "Marie")
         const nomNettoye = resultats.nomFichier.replace('.txt', '').replace('Discussion WhatsApp avec ', '');
-        titreFichier.textContent = `Ton résumé avec ${nomNettoye}`;
+        titreDuFichier.textContent = `Ton résumé avec ${nomNettoye}`;
     }
 
-    const dateAnalyse = conteneur.querySelector('.wrapped-date-analyse');
+    const dateDAnalyse = conteneur.querySelector('.wrapped-date-analyse');
     const maintenant = new Date();
-    dateAnalyse.textContent = `Analysé le ${maintenant.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+    dateDAnalyse.textContent = `Analysé le ${maintenant.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
 
     // --- BRIQUE VOLUME ---
-    if (resultats.volumeMeter) {
+    if (resultats.volumeMessages) {
         const briqueVolume = conteneur.querySelector('#wrapped-brique-volume');
         briqueVolume.classList.remove('hidden');
 
-        const zoneContenu = briqueVolume.querySelector('.wrapped-volume-contenu');
-        const tousLesAuteurs = Object.keys(resultats.volumeMeter);
-        const totalMessages = Object.values(resultats.volumeMeter).reduce((acc, val) => acc + val, 0);
+        const zoneDeContenu = briqueVolume.querySelector('.wrapped-volume-contenu');
+        const tousLesAuteurs = Object.keys(resultats.volumeMessages);
+        const totalDesMessages = Object.values(resultats.volumeMessages).reduce((accumulateur, valeur) => accumulateur + valeur, 0);
 
         const paletteCouleurs = ['#818cf8', '#f472b6', '#34d399', '#fbbf24'];
 
         tousLesAuteurs.forEach((nomAuteur, index) => {
-            const nbMessages = resultats.volumeMeter[nomAuteur];
-            const pourcentage = totalMessages > 0 ? ((nbMessages / totalMessages) * 100).toFixed(1) : 0;
+            const nombreDeMessages = resultats.volumeMessages[nomAuteur];
+            const pourcentage = totalDesMessages > 0 ? ((nombreDeMessages / totalDesMessages) * 100).toFixed(1) : 0;
             const couleur = paletteCouleurs[index % paletteCouleurs.length];
 
             const ligneHTML = document.createElement('div');
@@ -50,24 +50,24 @@ function remplirWrapped(conteneur, resultats) {
             ligneHTML.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; white-space: nowrap;">
                     <span style="font-weight: 700; color: #e2e8f0; font-size: 14px;">${nomAuteur}</span>
-                    <span style="font-size: 12px; color: #94a3b8; white-space: nowrap;">${nbMessages.toLocaleString()} msgs · ${pourcentage}%</span>
+                    <span style="font-size: 12px; color: #94a3b8; white-space: nowrap;">${nombreDeMessages.toLocaleString()} msgs · ${pourcentage}%</span>
                 </div>
                 <div style="height: 10px; width: 100%; background: rgba(255,255,255,0.05); border-radius: 999px; overflow: hidden;">
                     <div style="height: 100%; width: ${pourcentage}%; background: ${couleur}; border-radius: 999px; box-shadow: 0 0 12px ${couleur}55;"></div>
                 </div>
             `;
-            zoneContenu.appendChild(ligneHTML);
+            zoneDeContenu.appendChild(ligneHTML);
         });
     }
 
     // --- BRIQUE ACTIVITÉ ---
     if (resultats.activite) {
-        const briqueActivite = conteneur.querySelector('#wrapped-brique-activite');
-        briqueActivite.classList.remove('hidden');
+        const briqueDActivite = conteneur.querySelector('#wrapped-brique-activite');
+        briqueDActivite.classList.remove('hidden');
 
-        briqueActivite.querySelector('.wrapped-val-jour-actif').textContent = resultats.activite.jourPlusActif;
-        briqueActivite.querySelector('.wrapped-val-moment').textContent = formaterLeMoment(resultats.activite.momentLePlusActif);
-        briqueActivite.querySelector('.wrapped-val-total').textContent = resultats.activite.totalMessages.toLocaleString();
+        briqueDActivite.querySelector('.wrapped-val-jour-actif').textContent = resultats.activite.jourPlusActif;
+        briqueDActivite.querySelector('.wrapped-val-moment').textContent = formaterLeMoment(resultats.activite.momentLePlusActif);
+        briqueDActivite.querySelector('.wrapped-val-total').textContent = resultats.activite.totalMessages.toLocaleString();
     }
 
     // --- BRIQUE TEMPS DE RÉPONSE ---
@@ -75,17 +75,17 @@ function remplirWrapped(conteneur, resultats) {
         const briqueTemps = conteneur.querySelector('#wrapped-brique-temps');
         briqueTemps.classList.remove('hidden');
 
-        const zoneContenu = briqueTemps.querySelector('.wrapped-temps-contenu');
-        const statsParAuteur = resultats.tempsReponse.statsParAuteur;
+        const zoneDeContenu = briqueTemps.querySelector('.wrapped-temps-contenu');
+        const statistiquesParAuteur = resultats.tempsReponse.statsParAuteur;
 
-        Object.entries(statsParAuteur).forEach(([nomAuteur, stats]) => {
+        Object.entries(statistiquesParAuteur).forEach(([nomAuteur, statistiques]) => {
             const carteHTML = document.createElement('div');
             carteHTML.style.cssText = 'display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 12px 16px; border-radius: 12px; white-space: nowrap;';
             carteHTML.innerHTML = `
                 <span style="font-weight: 700; color: #e2e8f0; font-size: 14px;">${nomAuteur}</span>
-                <span style="font-weight: 800; color: #818cf8; font-size: 16px; white-space: nowrap;">${stats.moyenneFormatee}</span>
+                <span style="font-weight: 800; color: #818cf8; font-size: 16px; white-space: nowrap;">${statistiques.moyenneFormatee}</span>
             `;
-            zoneContenu.appendChild(carteHTML);
+            zoneDeContenu.appendChild(carteHTML);
         });
     }
 
@@ -94,15 +94,15 @@ function remplirWrapped(conteneur, resultats) {
         const briqueEmojis = conteneur.querySelector('#wrapped-brique-emojis');
         briqueEmojis.classList.remove('hidden');
 
-        const zoneContenu = briqueEmojis.querySelector('.wrapped-emojis-contenu');
+        const zoneDeContenu = briqueEmojis.querySelector('.wrapped-emojis-contenu');
 
-        Object.entries(resultats.emojis).forEach(([nomAuteur, topsEmojis]) => {
+        Object.entries(resultats.emojis).forEach(([nomAuteur, meilleursEmojis]) => {
             const colonneAuteur = document.createElement('div');
             colonneAuteur.style.cssText = 'flex: 1; min-width: 0;';
 
             let emojisHTML = `<p style="font-weight: 700; color: #e2e8f0; font-size: 14px; margin-bottom: 12px;">${nomAuteur}</p>`;
             // Limiter à 3 emojis pour le Wrapped (concis)
-            topsEmojis.slice(0, 3).forEach(item => {
+            meilleursEmojis.slice(0, 3).forEach(item => {
                 emojisHTML += `
                     <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px; white-space: nowrap;">
                         <span style="font-size: 28px; line-height: 1; flex-shrink: 0;">${item.emoji}</span>
@@ -112,7 +112,7 @@ function remplirWrapped(conteneur, resultats) {
             });
 
             colonneAuteur.innerHTML = emojisHTML;
-            zoneContenu.appendChild(colonneAuteur);
+            zoneDeContenu.appendChild(colonneAuteur);
         });
     }
 
@@ -136,8 +136,8 @@ function remplirWrapped(conteneur, resultats) {
  * @param {Object} resultats - L'objet resultatsWrapped contenant toutes les analyses.
  */
 export async function genererImageWrapped(resultats) {
-    const modeleWrapped = document.querySelector('#template-wrapped');
-    if (!modeleWrapped) {
+    const modeleDuWrapped = document.querySelector('#template-wrapped');
+    if (!modeleDuWrapped) {
         console.error('[ChatViz] Template Wrapped introuvable.');
         return;
     }
@@ -147,8 +147,8 @@ export async function genererImageWrapped(resultats) {
     conteneurTemporaire.style.cssText = 'position: fixed; left: -9999px; top: 0; z-index: -1;';
     document.body.appendChild(conteneurTemporaire);
 
-    const instanceWrapped = modeleWrapped.content.cloneNode(true);
-    conteneurTemporaire.appendChild(instanceWrapped);
+    const instanceDuWrapped = modeleDuWrapped.content.cloneNode(true);
+    conteneurTemporaire.appendChild(instanceDuWrapped);
 
     // 2. Récupérer le vrai nœud DOM (pas le DocumentFragment)
     const zoneDeRendu = conteneurTemporaire.querySelector('#wrapped-render-zone');
@@ -161,16 +161,16 @@ export async function genererImageWrapped(resultats) {
 
     try {
         // 5. Capture en PNG haute définition (pixelRatio 2 = retina)
-        const urlImage = await toPng(zoneDeRendu, {
+        const urlDeLImage = await toPng(zoneDeRendu, {
             pixelRatio: 2,
             backgroundColor: '#0f0d1a',
         });
 
         // 6. Téléchargement automatique
-        const lienTelechargement = document.createElement('a');
-        lienTelechargement.download = 'chatviz-wrapped.png';
-        lienTelechargement.href = urlImage;
-        lienTelechargement.click();
+        const lienDeTelechargement = document.createElement('a');
+        lienDeTelechargement.download = 'chatviz-wrapped.png';
+        lienDeTelechargement.href = urlDeLImage;
+        lienDeTelechargement.click();
 
         console.log('[ChatViz] Wrapped exporté avec succès !');
 

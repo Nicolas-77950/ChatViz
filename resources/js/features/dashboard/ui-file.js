@@ -24,7 +24,7 @@ import { compterBriques } from './export/wrapped/logiqueWrapped.js';
 let resultatsWrapped = {
     nomFichier: null,
     nombreMessages: 0,
-    volumeMeter: null,
+    volumeMessages: null,
     tempsReponse: null,
     activite: null,
     emojis: null,
@@ -93,7 +93,7 @@ export function afficherCarteFichier(nomFichier, listeMessages) {
     // --- Boutons Algorithmiques (avec stockage pour le Wrapped) ---
     instanceOptions.querySelector('#btn-volume-meter').addEventListener('click', () => {
         const resultatsDuVolume = calculerVolumeMeter(listeMessages);
-        resultatsWrapped.volumeMeter = resultatsDuVolume;
+        resultatsWrapped.volumeMessages = resultatsDuVolume;
         mettreAJourCompteurWrapped();
         afficherVolumeMeter(resultatsDuVolume, 'conteneur-resultat-specifique');
     });

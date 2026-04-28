@@ -20,16 +20,16 @@ const COULEUR_ACCENT_DEFAUT = '#818cf8';
 
 /**
  * Détermine la couleur d'accent en fonction de l'emoji le plus utilisé globalement.
- * @param {Object|null} resultatsEmojis - Résultats de l'analyse emojis (top emojis par auteur).
+ * @param {Object|null} resultatsEmoji - Résultats de l'analyse emojis (top emojis par auteur).
  * @returns {string} Code couleur CSS.
  */
-export function determinerCouleurAccent(resultatsEmojis) {
-    if (!resultatsEmojis) return COULEUR_ACCENT_DEFAUT;
+export function determinerCouleurAccent(resultatsEmoji) {
+    if (!resultatsEmoji) return COULEUR_ACCENT_DEFAUT;
 
     // Fusion de tous les emojis de tous les auteurs pour trouver le plus utilisé globalement
     const compteurGlobal = {};
-    Object.values(resultatsEmojis).forEach(topsAuteur => {
-        topsAuteur.forEach(item => {
+    Object.values(resultatsEmoji).forEach(meilleursAuteur => {
+        meilleursAuteur.forEach(item => {
             compteurGlobal[item.emoji] = (compteurGlobal[item.emoji] || 0) + item.count;
         });
     });
@@ -58,13 +58,13 @@ export function formaterLeMoment(identifiant) {
 /**
  * Tronque un texte de verdict IA pour l'affichage résumé dans le Wrapped.
  * Garde les 300 premiers caractères max.
- * @param {string} texteVerdict - Le texte brut du verdict IA.
+ * @param {string} texteDuVerdict - Le texte brut du verdict IA.
  * @returns {string} Texte tronqué.
  */
-export function tronquerVerdict(texteVerdict) {
-    if (!texteVerdict) return '';
+export function tronquerVerdict(texteDuVerdict) {
+    if (!texteDuVerdict) return '';
     // Supprimer le markdown (titres, gras, etc.) pour un rendu propre
-    const texteBrut = texteVerdict
+    const texteBrut = texteDuVerdict
         .replace(/#{1,6}\s/g, '')
         .replace(/\*\*/g, '')
         .replace(/\*/g, '')
@@ -86,7 +86,7 @@ export function tronquerVerdict(texteVerdict) {
  */
 export function compterBriques(resultats) {
     let compteur = 0;
-    if (resultats.volumeMeter) compteur++;
+    if (resultats.volumeMessages) compteur++;
     if (resultats.activite) compteur++;
     if (resultats.tempsReponse) compteur++;
     if (resultats.emojis) compteur++;
