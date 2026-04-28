@@ -18,7 +18,9 @@
                 </x-nav-link>
                 <!-- On peut rajouter d'autres liens ici si besoin -->
                 <a href="{{ route('menu') }}" class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-white transition">Menu</a>
-                <a href="{{ route('about') }}" class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-white transition">À propos</a>
+                <x-nav-link :href="route('about')" :active="request()->routeIs('about')" class="text-xs font-bold uppercase tracking-[0.2em] !text-slate-400 hover:!text-indigo-400 border-none">
+                    {{ __('À propos') }}
+                </x-nav-link>
             </div>
         </div>
 
@@ -69,7 +71,9 @@
         <div class="flex flex-col gap-4">
             <a href="{{ route('dashboard') }}" class="text-xs font-bold uppercase tracking-widest text-white px-4">Tableau de bord</a>
             <a href="{{ route('menu') }}" class="text-xs font-bold uppercase tracking-widest text-slate-400 px-4">Menu</a>
-            <a href="{{ route('about') }}" class="text-xs font-bold uppercase tracking-widest text-slate-400 px-4">À propos</a>
+            <x-responsive-nav-link :href="route('about')" :active="request()->routeIs('about')" class="!text-slate-400 hover:!text-white border-none py-0">
+                {{ __('À propos') }}
+            </x-responsive-nav-link>
             <div class="border-t border-white/5 pt-4">
                 <a href="{{ route('profile.edit') }}" class="text-xs font-bold uppercase tracking-widest text-slate-400 px-4 italic">Profil</a>
             </div>

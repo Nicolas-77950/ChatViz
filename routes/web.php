@@ -14,7 +14,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Routes publiques
 Route::get('/menu', function () { return view('welcome'); })->name('menu');
-Route::get('/a-propos', function () { return view('welcome'); })->name('about');
+Route::get('/about', function () {
+    return view('about');
+})->middleware(['auth', 'verified'])->name('about');
 Route::get('/contact', function () { return view('welcome'); })->name('contact');
 Route::get('/safe-zone', function () { return view('welcome'); })->name('safe-zone');
 
