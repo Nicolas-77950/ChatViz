@@ -172,6 +172,7 @@
     @include('pages.dashboard.partials.volumeMeter')
     @include('pages.dashboard.partials.optionsAnalyse')
     @include('pages.dashboard.partials.sentimentIA')
+    @include('pages.dashboard.partials.wrapped')
 
     {{-- Bibliothèque Markdown pour le rendu des verdicts IA --}}
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>

@@ -81,4 +81,30 @@
         font-style: italic;
         color: #94a3b8;
     }
+
+    /* === ChatViz Wrapped — Export Visuel === */
+    .wrapped-container {
+        width: 1080px;
+        background: linear-gradient(180deg, #0f0d1a 0%, #1a1033 50%, #0f0d1a 100%);
+        padding: 3rem;
+        font-family: 'Outfit', sans-serif;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .wrapped-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.15;
+    }
+
+    .wrapped-brique {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1.5rem;
+        padding: 1.5rem 2rem;
+    }
 }

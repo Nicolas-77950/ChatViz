@@ -99,6 +99,26 @@
             </div>
         </div>
         
+        <!-- ====== SECTION 3 : Export Wrapped ====== -->
+        <div id="section-export-wrapped" class="hidden mt-10 pt-10 border-t border-white/10">
+            <div class="flex items-center gap-3 mb-5">
+                <span class="bg-gradient-to-br from-indigo-500/20 to-pink-500/20 text-indigo-400 p-2 rounded-lg text-lg">🎨</span>
+                <div>
+                    <p class="text-white font-bold">Export Visuel</p>
+                    <p class="text-slate-500 text-xs">Téléchargez votre résumé en image HD</p>
+                </div>
+            </div>
+
+            <button id="btn-generer-wrapped" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white p-6 rounded-2xl font-bold text-lg flex items-center justify-center gap-4 hover:scale-[1.02] transition-all shadow-2xl shadow-indigo-500/20 active:scale-[0.98] group relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-6 relative z-10">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                <span class="relative z-10">Exporter mon Wrapped</span>
+                <span id="compteur-briques" class="bg-white/20 px-3 py-1 rounded-full text-sm font-bold relative z-10">0/6</span>
+            </button>
+        </div>
+
         <!-- Zone de rendu spécifique -->
         <div id="conteneur-resultat-specifique" class="mt-8"></div>
     </div>

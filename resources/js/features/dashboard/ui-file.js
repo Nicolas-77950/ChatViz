@@ -14,6 +14,39 @@ import { afficherVolumeMeter } from './analysis/algo/volumeMeter/renduVolumeMete
 import { CONFIG_AMOUR, lancerAnalyseAmour } from './analysis/IA/amour/logiqueAmour.js';
 import { CONFIG_ENGAGEMENT, lancerAnalyseEngagement } from './analysis/IA/engagement/logiqueEngagement.js';
 import { afficherChargementIA, afficherVerdictIA, afficherErreurIA } from './analysis/IA/renduIA.js';
+import { genererImageWrapped } from './export/wrapped/renduWrapped.js';
+import { compterBriques } from './export/wrapped/logiqueWrapped.js';
+
+/**
+ * Objet global accumulant les résultats d'analyse pour l'export Wrapped.
+ * Chaque propriété est remplie au moment où l'utilisateur lance l'analyse correspondante.
+ */
+let resultatsWrapped = {
+    nomFichier: null,
+    nombreMessages: 0,
+    volumeMeter: null,
+    tempsReponse: null,
+    activite: null,
+    emojis: null,
+    verdictAmour: null,
+    verdictEngagement: null,
+};
+
+/**
+ * Met à jour le compteur de briques et la visibilité du bouton Wrapped.
+ */
+function mettreAJourCompteurWrapped() {
+    const sectionExport = document.getElementById('section-export-wrapped');
+    const compteurElement = document.getElementById('compteur-briques');
+    if (!sectionExport || !compteurElement) return;
+
+    const nbBriques = compterBriques(resultatsWrapped);
+    compteurElement.textContent = `${nbBriques}/6`;
+
+    if (nbBriques > 0) {
+        sectionExport.classList.remove('hidden');
+    }
+}
 
 /**
  * Affiche l'interface de sélection d'analyse pour le fichier chargé.
@@ -25,6 +58,18 @@ export function afficherCarteFichier(nomFichier, listeMessages) {
     const conteneurHistorique = document.getElementById('history-container');
 
     if (!conteneurDirect) return;
+
+    // Réinitialisation de l'objet Wrapped pour ce nouveau fichier
+    resultatsWrapped = {
+        nomFichier: nomFichier,
+        nombreMessages: listeMessages.length,
+        volumeMeter: null,
+        tempsReponse: null,
+        activite: null,
+        emojis: null,
+        verdictAmour: null,
+        verdictEngagement: null,
+    };
 
     // Gestion de l'affichage global de l'interface
     conteneurDirect.classList.remove('hidden');
@@ -45,24 +90,32 @@ export function afficherCarteFichier(nomFichier, listeMessages) {
         if (conteneurHistorique) conteneurHistorique.classList.remove('hidden');
     });
 
-    // --- Boutons Algorithmiques ---
+    // --- Boutons Algorithmiques (avec stockage pour le Wrapped) ---
     instanceOptions.querySelector('#btn-volume-meter').addEventListener('click', () => {
         const resultatsDuVolume = calculerVolumeMeter(listeMessages);
+        resultatsWrapped.volumeMeter = resultatsDuVolume;
+        mettreAJourCompteurWrapped();
         afficherVolumeMeter(resultatsDuVolume, 'conteneur-resultat-specifique');
     });
 
     instanceOptions.querySelector('#btn-temps-reponse').addEventListener('click', () => {
         const resultatsDuTemps = calculerTempsReponse(listeMessages);
+        resultatsWrapped.tempsReponse = resultatsDuTemps;
+        mettreAJourCompteurWrapped();
         afficherTempsReponse(resultatsDuTemps, 'conteneur-resultat-specifique');
     });
 
     instanceOptions.querySelector('#btn-activite').addEventListener('click', () => {
         const resultatsDeLActivite = calculerActivite(listeMessages);
+        resultatsWrapped.activite = resultatsDeLActivite;
+        mettreAJourCompteurWrapped();
         afficherActivite(resultatsDeLActivite, 'conteneur-resultat-specifique');
     });
 
     instanceOptions.querySelector('#btn-emojis').addEventListener('click', () => {
         const resultatsDesEmojis = calculerEmojis(listeMessages);
+        resultatsWrapped.emojis = resultatsDesEmojis;
+        mettreAJourCompteurWrapped();
         afficherEmojis(resultatsDesEmojis, 'conteneur-resultat-specifique');
     });
 
@@ -76,6 +129,11 @@ export function afficherCarteFichier(nomFichier, listeMessages) {
         instanceOptions.querySelector(selecteur).addEventListener('click', () => {
             lancerAnalyseIADirecte(listeMessages, typeAnalyse, nomFichier);
         });
+    });
+
+    // --- Bouton Wrapped ---
+    instanceOptions.querySelector('#btn-generer-wrapped')?.addEventListener('click', () => {
+        genererImageWrapped(resultatsWrapped);
     });
 
     // 4. Injection finale dans le navigateur
@@ -110,6 +168,14 @@ async function lancerAnalyseIADirecte(listeMessages, identifiantType, nomFichier
     try {
         // 2. Appel à l'IA locale via le backend Laravel (100% local)
         const resultat = await fonctionLancement(listeMessages, nomFichier);
+
+        // 2.5 Stockage du verdict pour le Wrapped
+        if (identifiantType === 'amour') {
+            resultatsWrapped.verdictAmour = resultat.verdict;
+        } else if (identifiantType === 'engagement') {
+            resultatsWrapped.verdictEngagement = resultat.verdict;
+        }
+        mettreAJourCompteurWrapped();
 
         // 3. Affichage du verdict
         afficherVerdictIA(resultat, idCible, () => {
