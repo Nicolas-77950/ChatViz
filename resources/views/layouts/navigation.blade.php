@@ -21,7 +21,7 @@
                 <x-nav-link :href="route('about')" :active="request()->routeIs('about')" class="text-xs font-bold uppercase tracking-[0.2em] !text-slate-400 hover:!text-indigo-400 border-none">
                     {{ __('À propos') }}
                 </x-nav-link>
-                <a href="{{ route('contact-us') }}" class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-white transition">Contact</a>
+                <a href="{{ route('contact.index') }}" class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-white transition">Contact</a>
             </div>
         </div>
 

@@ -57,9 +57,4 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
-        
-    Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-    
-    Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 });
-

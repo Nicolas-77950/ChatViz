@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\ContactController; 
 use App\Mail\WelcomeEmail; 
 use Illuminate\Support\Facades\Route;
@@ -16,7 +16,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Routes publiques
-Route::get('/contact', [ContactController::class, 'index'])->name('contact-us');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 Route::get('/menu', function () { return view('welcome'); })->name('menu');
