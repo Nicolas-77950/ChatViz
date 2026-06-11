@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Contact; 
 use App\Services\Contact\PhoneNormalizer; 
 use App\Mail\ContactMessage; 
-use App\Mail\AutoReplyMail; // <--- Crée ce mail via : php artisan make:mail AutoReplyMail
+use App\Mail\AutoReplyMail; // php artisan make:mail AutoReplyMail
 use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
@@ -37,7 +37,7 @@ class ContactController extends Controller
             //  Notification pour l'administrateur
             Mail::to('ton-email@exemple.com')->send(new ContactMessage($validated));
 
-            // B. envoi de la réponse automatique à l'utilisateur
+            // envoi de la réponse automatique à l'utilisateur
             Mail::to($validated['email'])->send(new AutoReplyMail($validated, $autoReplyContent));
             
         } catch (\Exception $e) {

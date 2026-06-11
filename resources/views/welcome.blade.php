@@ -47,7 +47,7 @@
                         <div class="flex items-center gap-12 text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
                             <a href="{{ route('menu') }}" class="hover:text-indigo-400 transition-all hover:scale-110">Menu</a>
                             <a href="{{ route('about') }}" class="hover:text-indigo-400 transition-all hover:scale-110">À propos</a>
-                            <a href="{{ route('contact') }}" class="hover:text-indigo-400 transition-all hover:scale-110">Contact</a>
+                            <a href="{{ route('contact.index') }}" class="hover:text-indigo-400 transition-all hover:scale-110">Contact</a>
                         </div>
                     </div>
                 </div>
@@ -163,7 +163,7 @@
                     <ul class="flex flex-col gap-4 text-slate-400 text-sm">
                         <li><a href="{{ route('menu') }}" class="hover:text-indigo-400 transition">Menu</a></li>
                         <li><a href="{{ route('about') }}" class="hover:text-indigo-400 transition">À propos</a></li>
-                        <li><a href="{{ route('contact') }}" class="hover:text-indigo-400 transition">Contact</a></li>
+                        <li><a href="{{ route('contact.index') }}" class="hover:text-indigo-400 transition">Contact</a></li>
                     </ul>
                 </div>
 

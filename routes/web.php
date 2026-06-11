@@ -12,7 +12,7 @@ Route::get('/', function () {
 
 require __DIR__ . '/web/dashboard.php';
 
-Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact-us');
 Route::get('/menu', function () { return view('welcome'); })->name('menu');
 Route::get('/a-propos', function () { return view('welcome'); })->name('about');
 Route::get('/safe-zone', function () { return view('welcome'); })->name('safe-zone');
@@ -24,6 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact-us');
 
 require __DIR__.'/auth.php';
 
