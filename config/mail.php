@@ -31,7 +31,7 @@ return [
     |
     | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
     |            "postmark", "resend", "log", "array",
-    |            "failover", "roundrobin"
+    |            "failover", "roundrobin", "mailtrap"
     |
     */
 
@@ -48,6 +48,12 @@ return [
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
+
+        // --- BLOC AJOUTÉ POUR L'API MAILTRAP ---
+        'mailtrap' => [
+            'transport' => 'mailtrap',
+        ],
+        // ---------------------------------------
 
         'ses' => [
             'transport' => 'ses',
