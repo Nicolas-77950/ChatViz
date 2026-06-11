@@ -41,6 +41,7 @@
                                     <input type="email" name="email" required value="{{ old('email') }}"
                                         class="w-full bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-slate-700"
                                         placeholder="john@example.com">
+                                    @error('email') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 
@@ -49,6 +50,7 @@
                                 <textarea name="message" rows="5" required
                                     class="w-full bg-white/5 border border-white/5 rounded-2xl px-6 py-4 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all placeholder-slate-700"
                                     placeholder="Comment pouvons-nous vous aider ?">{{ old('message') }}</textarea>
+                                @error('message') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                             </div>
 
                             <button type="submit" 

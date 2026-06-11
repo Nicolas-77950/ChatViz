@@ -2,23 +2,22 @@
 
 namespace App\DTOs;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\CreateContactRequest;
 
 class CreateContactDTO
 {
     public function __construct(
-        
+        public readonly string $name,
+        public readonly string $email,
+        public readonly string $message
     ) {}
 
-    public static function depuisRequete(Request $request): self
+    public static function fromRequest(CreateContactRequest $request): self
     {
-        // On récupère les données avec des valeurs par défaut vides pour éviter les erreurs de type
         return new self(
-            nom: $request->input('name', ''),
-            email: $request->input('email', ''),
-            message: $request->input('message', '')
+            name: $request->validated('name'),
+            email: $request->validated('email'),
+            message: $request->validated('message')
         );
     }
-  }
-
-    
+}
